@@ -9,7 +9,38 @@
 <body>
     <div class="container">
         <h1>🏆 考研足球经理养成系统</h1>
-        
+
+        <!-- 新增功能区域 -->
+        <div class="new-functions">
+            <div class="function-card">
+                <h2>📚 真题模拟系统</h2>
+                <p>模拟考研真题，提升实战能力</p>
+                <div class="exam-options">
+                    <button id="math-exam">数学真题模拟</button>
+                    <button id="english-exam">英语真题模拟</button>
+                    <button id="politics-exam">政治真题模拟</button>
+                </div>
+                <div id="exam-result" class="exam-result"></div>
+            </div>
+            
+            <div class="function-card">
+                <h2>⏰ 知识点记忆提醒</h2>
+                <p>基于艾宾浩斯遗忘曲线的科学提醒</p>
+                <div id="memory-reminder" class="memory-reminder">
+                    <p>今日需复习：<span id="reminder-text">无</span></p>
+                    <p>下次复习时间：<span id="next-review">今天</span></p>
+                </div>
+            </div>
+            
+            <div class="function-card">
+                <h2>💡 个性化学习建议</h2>
+                <p>根据错题分析生成针对性训练</p>
+                <div id="personalized-suggestion" class="suggestion">
+                    <p>系统建议：请重点提升【领导力】属性，进行1小时"知识体系构建"训练</p>
+                </div>
+            </div>
+        </div>
+
         <!-- 阶段显示 -->
         <div class="stage-display">
             <h2>当前阶段</h2>
