@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>考研足球经理</title>
+    <title>🏆 考研足球经理养成系统</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>🏆 考研足球经理养成系统</h1>
         
+        <!-- 阶段显示 -->
+        <div class="stage-display">
+            <h2>当前阶段</h2>
+            <div class="stage" id="current-stage">青训营</div>
+        </div>
+
         <!-- 球员状态显示 -->
         <div class="player-status">
             <h2>当前球员状态</h2>
@@ -69,19 +75,23 @@
                     <option value="政治">政治</option>
                     <option value="专业课">专业课</option>
                     <option value="综合">综合</option>
+                    <option value="知识体系构建">知识体系构建</option>
+                    <option value="错题分析">错题分析</option>
+                </select>
+                <select id="review-round">
+                    <option value="第一轮">第一轮</option>
+                    <option value="第二轮">第二轮</option>
+                    <option value="第三轮">第三轮</option>
+                </select>
+                <select id="study-state">
+                    <option value="专注高效">专注高效</option>
+                    <option value="一般">一般</option>
+                    <option value="分心">分心</option>
+                    <option value="疲惫">疲惫</option>
                 </select>
                 <button id="log-training">记录训练</button>
             </div>
             <div class="log-history" id="log-history"></div>
         </div>
 
-        <!-- 进步报告 -->
-        <div class="report">
-            <h2>今日进步报告</h2>
-            <div id="report-content"></div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+        <!-- 进步
