@@ -290,3 +290,235 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('player', JSON.stringify(player));
     }
 });
+
+// ... [原有代码保持不变] ...
+
+// 新增：真题模拟系统
+const simulateExam = (subject) => {
+    const player = initPlayer();
+    
+    // 模拟考试难度系数
+    const difficulty = {
+        'math': 1.2,
+        'english': 1.0,
+        'politics': 0.8
+    };
+    
+    // 生成模拟分数（基于当前属性）
+    const baseScore = Math.floor(
+        (player.shot + player.dribble + player.defense) / 3
+    );
+    
+    const score = Math.min(100, Math.max(0, baseScore * difficulty[subject]));
+    
+    // 提升相关属性
+    let attribute = 'shot';
+    switch(subject) {
+        case 'math': attribute = 'dribble'; break;
+        case 'politics': attribute = 'defense'; break;
+    }
+    
+    player[attribute] += Math.floor(score / 10);
+    
+    // 记录考试
+    if (!player.exams) player.exams = [];
+    player.exams.push({
+        date: new Date().toISOString().split('T')[0],
+        subject: subject,
+        score: score,
+        type: '模拟'
+    });
+    
+    localStorage.setItem('player', JSON.stringify(player));
+    
+    // 显示结果
+    document.getElementById('exam-result').innerHTML = `
+        <p>✅ ${subject}模拟考试完成！分数：${score}/100</p>
+        <p>属性提升：${attribute} +${Math.floor(score / 10)}</p>
+    `;
+    document.getElementById('exam-result').style.display = 'block';
+    
+    // 更新状态
+    renderPlayer();
+    generateReport();
+};
+
+// 新增：知识点记忆周期提醒
+const setupMemoryReminders = () => {
+    const player = initPlayer();
+    
+    // 模拟知识点记忆周期（实际应用中可从数据库获取）
+    const memoryItems = [
+        {name: "微积分基本定理", cycle: 3, lastReview: "2023-10-01"},
+        {name: "三角函数公式", cycle: 5, lastReview: "2023-09-28"},
+        {name: "专业课核心概念", cycle: 7, lastReview: "2023-09-25"}
+    ];
+    
+    // 计算下次复习时间
+    const today = new Date();
+    const reminderItems = [];
+    
+    memoryItems.forEach(item => {
+        const lastReview = new Date(item.lastReview);
+        const daysSince = Math.floor((today - lastReview) / (1000 * 60 * 60 * 24));
+        
+        if (daysSince >= item.cycle) {
+            reminderItems.push(item);
+        }
+    });
+    
+    // 更新界面
+    const reminderText = reminderItems.length > 0 
+        ? reminderItems.map(i => i.name).join("、") 
+        : "无";
+    
+    document.getElementById('reminder-text').textContent = reminderText;
+    
+    if (reminderItems.length > 0) {
+        document.getElementById('next-review').textContent = 
+            `明天 (${new Date(new Date().getTime() + 24*60*60*1000).toLocaleDateString('zh-CN')})`;
+    } else {
+        document.getElementById('next-review').textContent = "今天";
+    }
+};
+
+// 新增：个性化学习建议
+const generatePersonalizedSuggestion = () => {
+    const player = initPlayer();
+    
+    // 检查错题分析
+    if (!player.mistakes || player.mistakes.length === 0) {
+        document.getElementById('personalized-suggestion').innerHTML = 
+            '<p>系统建议：请继续进行常规训练，保持学习节奏</p>';
+        return;
+    }
+    
+    // 分析错题类型
+    const typeCount = {};
+    player.mistakes.forEach(mistake => {
+        typeCount[mistake.type] = (typeCount[mistake.type] || 0) + 1;
+    });
+    
+    // 找出最常见错题类型
+    const mostCommonType = Object.keys(typeCount).reduce((a, b) => 
+        typeCount[a] > typeCount[b] ? a : b
+    );
+    
+    // 根据错题类型生成建议
+    let suggestion = "系统建议：";
+    let attribute = 'leadership';
+    
+    switch(mostCommonType) {
+        case '概念不清': 
+            suggestion += "请重点提升【防守】属性，进行30分钟概念梳理训练";
+            attribute = 'defense';
+            break;
+        case '计算错误': 
+            suggestion += "请重点提升【盘带】属性，进行20分钟计算专项训练";
+            attribute = 'dribble';
+            break;
+        case '知识体系缺失': 
+            suggestion += "请重点提升【领导力】属性，进行1小时'知识体系构建'训练";
+            attribute = 'leadership';
+            break;
+        case '粗心': 
+            suggestion += "请重点提升【速度】属性，进行15分钟限时训练";
+            attribute = 'speed';
+            break;
+        case '时间不够': 
+            suggestion += "请重点提升【体能】属性，进行25分钟时间管理训练";
+            attribute = 'stamina';
+            break;
+    }
+    
+    // 显示建议
+    document.getElementById('personalized-suggestion').innerHTML = 
+        `<p>${suggestion}</p>`;
+    
+    // 添加属性提升提示
+    const suggestionElement = document.getElementById('personalized-suggestion');
+    suggestionElement.style.background = 
+        `linear-gradient(to right, #e3f2fd, #bbdefb)`;
+    
+    // 为建议添加提升值
+    const suggestionText = suggestionElement.querySelector('p');
+    suggestionText.textContent += `（预计提升${Math.floor(player[attribute]/10)}点）`;
+};
+
+// 新增：考研时间线规划
+const setupExamTimeline = () => {
+    const timeline = [
+        {date: "2023-10-15", event: "全国硕士研究生招生考试报名开始"},
+        {date: "2023-12-24", event: "初试"},
+        {date: "2024-02-20", event: "初试成绩公布"},
+        {date: "2024-03-15", event: "复试"},
+        {date: "2024-05-01", event: "录取结果公布"}
+    ];
+    
+    const today = new Date().toISOString().split('T')[0];
+    const upcomingEvents = timeline.filter(event => event.date >= today);
+    
+    // 显示最近事件
+    if (upcomingEvents.length > 0) {
+        const nextEvent = upcomingEvents[0];
+        document.getElementById('exam-timeline').innerHTML = `
+            <h3>考研时间线</h3>
+            <p>最近重要事件：${nextEvent.event}（${nextEvent.date}）</p>
+            <p>距离事件：${calculateDaysUntil(nextEvent.date)}天</p>
+        `;
+    }
+};
+
+// 计算距离事件的天数
+const calculateDaysUntil = (dateString) => {
+    const eventDate = new Date(dateString);
+    const today = new Date();
+    const diffTime = eventDate - today;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+// 新增：学习能量系统
+const setupEnergySystem = () => {
+    const player = initPlayer();
+    
+    // 学习能量计算（基于学习状态和训练）
+    const energy = Math.min(100, Math.floor(
+        (player.shot + player.dribble + player.defense) / 3
+    ));
+    
+    // 更新能量显示
+    document.getElementById('energy-value').textContent = energy;
+    
+    // 更新能量条
+    document.getElementById('energy-bar').style.width = `${energy}%`;
+    
+    // 根据能量提供激励
+    let energyMessage = "学习能量充足！";
+    if (energy < 30) energyMessage = "学习能量不足，需要休息！";
+    else if (energy < 60) energyMessage = "学习能量中等，保持节奏！";
+    
+    document.getElementById('energy-message').textContent = energyMessage;
+};
+
+// 初始化系统（新增功能）
+const initSystem = () => {
+    // ... [原有初始化代码] ...
+    
+    // 初始化新增功能
+    setupMemoryReminders();
+    generatePersonalizedSuggestion();
+    setupExamTimeline();
+    setupEnergySystem();
+    
+    // 为真题模拟按钮添加事件
+    document.getElementById('math-exam').addEventListener('click', () => simulateExam('math'));
+    document.getElementById('english-exam').addEventListener('click', () => simulateExam('english'));
+    document.getElementById('politics-exam').addEventListener('click', () => simulateExam('politics'));
+    
+    // 每天更新记忆提醒
+    if (new Date().getDate() === 1) {
+        setupMemoryReminders();
+    }
+};
+
+// ... [原有代码保持不变] ...
