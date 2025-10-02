@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考研足球经理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 考研足球经理养成系统</h1>
+        
+        <!-- 球员状态显示 -->
+        <div class="player-status">
+            <h2>当前球员状态</h2>
+            <div class="attributes">
+                <div class="attribute">
+                    <div class="attr-name">射门（英语）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="shot"></div>
+                    </div>
+                    <div class="attr-value" id="shot-value">50</div>
+                </div>
+                <div class="attribute">
+                    <div class="attr-name">盘带（数学）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="dribble"></div>
+                    </div>
+                    <div class="attr-value" id="dribble-value">50</div>
+                </div>
+                <div class="attribute">
+                    <div class="attr-name">防守（政治）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="defense"></div>
+                    </div>
+                    <div class="attr-value" id="defense-value">50</div>
+                </div>
+                <div class="attribute">
+                    <div class="attr-name">速度（解题）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="speed"></div>
+                    </div>
+                    <div class="attr-value" id="speed-value">50</div>
+                </div>
+                <div class="attribute">
+                    <div class="attr-name">体能（知识）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="stamina"></div>
+                    </div>
+                    <div class="attr-value" id="stamina-value">50</div>
+                </div>
+                <div class="attribute">
+                    <div class="attr-name">领导力（整合）</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="leadership"></div>
+                    </div>
+                    <div class="attr-value" id="leadership-value">50</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 训练日志 -->
+        <div class="training-log">
+            <h2>今日训练记录</h2>
+            <div class="log-form">
+                <select id="training-type">
+                    <option value="英语">英语</option>
+                    <option value="数学">数学</option>
+                    <option value="政治">政治</option>
+                    <option value="专业课">专业课</option>
+                    <option value="综合">综合</option>
+                </select>
+                <button id="log-training">记录训练</button>
+            </div>
+            <div class="log-history" id="log-history"></div>
+        </div>
+
+        <!-- 进步报告 -->
+        <div class="report">
+            <h2>今日进步报告</h2>
+            <div id="report-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
