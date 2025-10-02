@@ -197,7 +197,85 @@ h2 {
     cursor: pointer;
     transition: all 0.3s;
 }
+/* ... [原有样式保持不变] ... */
 
+/* 新增功能样式 */
+.new-functions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.function-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid var(--primary);
+}
+
+.function-card h2 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.exam-options {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.exam-options button {
+    flex: 1;
+    padding: 10px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.exam-options button:hover {
+    background: #1a252f;
+    transform: translateY(-2px);
+}
+
+.exam-result {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #e8f4fc;
+    display: none;
+}
+
+.memory-reminder, .suggestion {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.memory-reminder p, .suggestion p {
+    margin: 8px 0;
+    font-style: italic;
+}
+
+.memory-reminder p:first-child {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.suggestion p {
+    background: linear-gradient(to right, #e3f2fd, #bbdefb);
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 4px solid var(--success);
+}
 #generate-weekly-review:hover {
     background: #e67e22;
     transform: scale(1.05);
