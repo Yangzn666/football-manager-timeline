@@ -48,6 +48,24 @@ h2 {
     border-bottom: 2px solid var(--light);
 }
 
+.stage-display {
+    background: #e8f4fc;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.stage {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 10px;
+    background: linear-gradient(to right, #4a6fa5, #1a3a6c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .player-status {
     background: #f8f9fa;
     border-radius: 12px;
@@ -106,6 +124,7 @@ h2 {
 
 .log-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -116,10 +135,11 @@ h2 {
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
+    flex: 1;
+    min-width: 150px;
 }
 
 .log-form select {
-    flex: 1;
     background: white;
     border: 1px solid #ddd;
 }
@@ -153,12 +173,34 @@ h2 {
     background: #f8f9fa;
     border-radius: 12px;
     padding: 25px;
+    margin-bottom: 30px;
 }
 
 #report-content {
     font-style: italic;
     color: #555;
     line-height: 1.7;
+}
+
+.weekly-review {
+    text-align: center;
+}
+
+#generate-weekly-review {
+    background: var(--warning);
+    color: white;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#generate-weekly-review:hover {
+    background: #e67e22;
+    transform: scale(1.05);
 }
 
 /* 响应式调整 */
@@ -169,5 +211,9 @@ h2 {
     
     .log-form {
         flex-direction: column;
+    }
+    
+    .stage {
+        font-size: 1.8rem;
     }
 }
