@@ -2,127 +2,519 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏆 考研足球经理养成系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 帮助您高效备考2026年研究生入学考试">
+    <title>考研备考系统</title>
     <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
 </head>
 <body>
-    <div class="container">
-        <h1>🏆 考研足球经理养成系统</h1>
+    <header>
+        <h1>考研备考系统</h1>
+        <div id="countdown"></div>
+    </header>
 
-        <!-- 新增功能区域 -->
-        <div class="new-functions">
-            <div class="function-card">
-                <h2>📚 真题模拟系统</h2>
-                <p>模拟考研真题，提升实战能力</p>
-                <div class="exam-options">
-                    <button id="math-exam">数学真题模拟</button>
-                    <button id="english-exam">英语真题模拟</button>
-                    <button id="politics-exam">政治真题模拟</button>
-                </div>
-                <div id="exam-result" class="exam-result"></div>
+    <main>
+        <section class="card">
+            <div class="card-header">
+                <h2>考试信息</h2>
             </div>
-            
-            <div class="function-card">
-                <h2>⏰ 知识点记忆提醒</h2>
-                <p>基于艾宾浩斯遗忘曲线的科学提醒</p>
-                <div id="memory-reminder" class="memory-reminder">
-                    <p>今日需复习：<span id="reminder-text">无</span></p>
-                    <p>下次复习时间：<span id="next-review">今天</span></p>
+            <div class="card-body">
+                <div class="exam-info-grid">
+                    <div class="exam-item">
+                        <div class="exam-label">考试日期</div>
+                        <div class="exam-value">2026年12月26日</div>
+                    </div>
+                    <div class="exam-item">
+                        <div class="exam-label">考试科目</div>
+                        <div class="exam-value">硕士研究生入学考试</div>
+                    </div>
+                    <div class="exam-item">
+                        <div class="exam-label">报考专业</div>
+                        <div class="exam-value">计算机科学与技术</div>
+                    </div>
+                    <div class="exam-item">
+                        <div class="exam-label">考试地点</div>
+                        <div class="exam-value">待定</div>
+                    </div>
+                </div>
+                
+                <div class="subjects-overview">
+                    <h3>考试科目详情</h3>
+                    <div class="subject-category">
+                        <div class="subject-category-title">公共课</div>
+                        <ul class="subject-list">
+                            <li class="subject-item-card">
+                                <div class="subject-name">数学一</div>
+                                <div class="subject-progress-mini">
+                                    <div class="progress-bar-mini">
+                                        <div class="progress-fill-mini" id="math-progress-mini"></div>
+                                    </div>
+                                    <span class="progress-text-mini" id="math-percent-mini">0%</span>
+                                </div>
+                            </li>
+                            <li class="subject-item-card">
+                                <div class="subject-name">英语一</div>
+                                <div class="subject-progress-mini">
+                                    <div class="progress-bar-mini">
+                                        <div class="progress-fill-mini" id="english-progress-mini"></div>
+                                    </div>
+                                    <span class="progress-text-mini" id="english-percent-mini">0%</span>
+                                </div>
+                            </li>
+                            <li class="subject-item-card">
+                                <div class="subject-name">政治</div>
+                                <div class="subject-progress-mini">
+                                    <div class="progress-bar-mini">
+                                        <div class="progress-fill-mini" id="politics-progress-mini"></div>
+                                    </div>
+                                    <span class="progress-text-mini" id="politics-percent-mini">0%</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subject-category">
+                        <div class="subject-category-title">专业课</div>
+                        <ul class="subject-list">
+                            <li class="subject-item-card">
+                                <div class="subject-name">408计算机学科专业基础综合</div>
+                                <div class="subject-subitems">
+                                    <div class="subject-subitem">
+                                        <span>数据结构</span>
+                                    </div>
+                                    <div class="subject-subitem">
+                                        <span>计算机组成原理</span>
+                                    </div>
+                                    <div class="subject-subitem">
+                                        <span>操作系统</span>
+                                    </div>
+                                    <div class="subject-subitem">
+                                        <span>计算机网络</span>
+                                    </div>
+                                </div>
+                                <div class="subject-progress-mini">
+                                    <div class="progress-bar-mini">
+                                        <div class="progress-fill-mini" id="cs-progress-mini"></div>
+                                    </div>
+                                    <span class="progress-text-mini" id="cs-percent-mini">0%</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            
-            <div class="function-card">
-                <h2>💡 个性化学习建议</h2>
-                <p>根据错题分析生成针对性训练</p>
-                <div id="personalized-suggestion" class="suggestion">
-                    <p>系统建议：请重点提升【领导力】属性，进行1小时"知识体系构建"训练</p>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- 阶段显示 -->
-        <div class="stage-display">
-            <h2>当前阶段</h2>
-            <div class="stage" id="current-stage">青训营</div>
-        </div>
-
-        <!-- 球员状态显示 -->
-        <div class="player-status">
-            <h2>当前球员状态</h2>
-            <div class="attributes">
-                <div class="attribute">
-                    <div class="attr-name">射门（英语）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="shot"></div>
-                    </div>
-                    <div class="attr-value" id="shot-value">50</div>
+        <!-- 知识点掌握情况跟踪 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>知识点掌握情况</h2>
+            </div>
+            <div class="card-body">
+                <div class="knowledge-controls">
+                    <select id="knowledge-subject">
+                        <option value="math">数学一</option>
+                        <option value="english">英语一</option>
+                        <option value="politics">政治</option>
+                        <option value="data-structure">数据结构</option>
+                        <option value="coa">计算机组成原理</option>
+                        <option value="os">操作系统</option>
+                        <option value="cn">计算机网络</option>
+                    </select>
+                    <input type="text" id="new-knowledge-point" placeholder="添加新知识点...">
+                    <button id="add-knowledge-point">添加</button>
                 </div>
-                <div class="attribute">
-                    <div class="attr-name">盘带（数学）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="dribble"></div>
+                <div class="knowledge-display">
+                    <div class="knowledge-filters">
+                        <button class="knowledge-filter active" data-filter="all">全部</button>
+                        <button class="knowledge-filter" data-filter="unmastered">未掌握</button>
+                        <button class="knowledge-filter" data-filter="basic">基本掌握</button>
+                        <button class="knowledge-filter" data-filter="proficient">熟练掌握</button>
                     </div>
-                    <div class="attr-value" id="dribble-value">50</div>
+                    <ul id="knowledge-points-list" class="sortable-list"></ul>
                 </div>
-                <div class="attribute">
-                    <div class="attr-name">防守（政治）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="defense"></div>
-                    </div>
-                    <div class="attr-value" id="defense-value">50</div>
-                </div>
-                <div class="attribute">
-                    <div class="attr-name">速度（解题）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="speed"></div>
-                    </div>
-                    <div class="attr-value" id="speed-value">50</div>
-                </div>
-                <div class="attribute">
-                    <div class="attr-name">体能（知识）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="stamina"></div>
-                    </div>
-                    <div class="attr-value" id="stamina-value">50</div>
-                </div>
-                <div class="attribute">
-                    <div class="attr-name">领导力（整合）</div>
-                    <div class="progress-bar">
-                        <div class="progress" id="leadership"></div>
-                    </div>
-                    <div class="attr-value" id="leadership-value">50</div>
+                <div class="knowledge-recommendations">
+                    <h3>复习建议</h3>
+                    <div id="recommendations-content"></div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 训练日志 -->
-        <div class="training-log">
-            <h2>今日训练记录</h2>
-            <div class="log-form">
-                <select id="training-type">
-                    <option value="英语">英语</option>
-                    <option value="数学">数学</option>
-                    <option value="政治">政治</option>
-                    <option value="专业课">专业课</option>
-                    <option value="综合">综合</option>
-                    <option value="知识体系构建">知识体系构建</option>
-                    <option value="错题分析">错题分析</option>
-                </select>
-                <select id="review-round">
-                    <option value="第一轮">第一轮</option>
-                    <option value="第二轮">第二轮</option>
-                    <option value="第三轮">第三轮</option>
-                </select>
-                <select id="study-state">
-                    <option value="专注高效">专注高效</option>
-                    <option value="一般">一般</option>
-                    <option value="分心">分心</option>
-                    <option value="疲惫">疲惫</option>
-                </select>
-                <button id="log-training">记录训练</button>
+        <!-- 学习计划制定与跟踪 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习计划</h2>
             </div>
-            <div class="log-history" id="log-history"></div>
-        </div>
+            <div class="card-body">
+                <div class="plan-controls">
+                    <select id="plan-stage">
+                        <option value="foundation">基础阶段</option>
+                        <option value="improvement">强化阶段</option>
+                        <option value="冲刺阶段">冲刺阶段</option>
+                    </select>
+                    <button id="generate-plan">生成计划</button>
+                </div>
+                <div class="plan-display">
+                    <h3>计划任务</h3>
+                    <ul id="plan-tasks" class="sortable-list"></ul>
+                </div>
+            </div>
+        </section>
 
-        <!-- 进步
+        <!-- 学习计时器 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>计时学习</h2>
+            </div>
+            <div class="card-body">
+                <div class="timer-controls">
+                    <select id="timer-subject">
+                        <option value="math">数学一</option>
+                        <option value="english">英语一</option>
+                        <option value="politics">政治</option>
+                        <option value="data-structure">数据结构</option>
+                        <option value="coa">计算机组成原理</option>
+                        <option value="os">操作系统</option>
+                        <option value="cn">计算机网络</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <div id="timer-display">00:00:00</div>
+                    <button id="start-timer">开始</button>
+                    <button id="pause-timer" disabled>暂停</button>
+                    <button id="reset-timer">重置</button>
+                </div>
+                
+                <!-- 补录学习时长 -->
+                <div class="manual-entry">
+                    <h3>补录学习时长</h3>
+                    <div class="manual-entry-controls">
+                        <select id="manual-entry-subject">
+                            <option value="math">数学一</option>
+                            <option value="english">英语一</option>
+                            <option value="politics">政治</option>
+                            <option value="data-structure">数据结构</option>
+                            <option value="coa">计算机组成原理</option>
+                            <option value="os">操作系统</option>
+                            <option value="cn">计算机网络</option>
+                            <option value="other">其他</option>
+                        </select>
+                        <input type="date" id="manual-entry-date">
+                        <input type="number" id="manual-entry-hours" placeholder="小时" min="0" max="24">
+                        <input type="number" id="manual-entry-minutes" placeholder="分钟" min="0" max="59">
+                        <button id="add-manual-entry">添加</button>
+                    </div>
+                </div>
+                
+                <div class="timer-stats">
+                    <h3>今日学习时长</h3>
+                    <div id="daily-stats"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 错题本 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>错题本</h2>
+            </div>
+            <div class="card-body">
+                <div class="mistakes-input">
+                    <select id="mistake-subject">
+                        <option value="math">数学一</option>
+                        <option value="english">英语一</option>
+                        <option value="politics">政治</option>
+                        <option value="data-structure">数据结构</option>
+                        <option value="coa">计算机组成原理</option>
+                        <option value="os">操作系统</option>
+                        <option value="cn">计算机网络</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <textarea id="mistake-content" placeholder="记录错题内容、错误原因和正确解法..."></textarea>
+                    
+                    <!-- 图片上传区域 -->
+                    <div class="image-upload-area">
+                        <h3>上传错题图片</h3>
+                        <div class="image-preview-container" id="image-preview-container">
+                            <p id="no-image-text">暂无图片</p>
+                        </div>
+                        <div class="image-upload-controls">
+                            <input type="file" id="mistake-images" accept="image/*" multiple style="display: none;">
+                            <button type="button" id="select-images-btn">选择图片</button>
+                            <button type="button" id="clear-images-btn">清空图片</button>
+                        </div>
+                    </div>
+                    
+                    <button id="add-mistake">添加错题</button>
+                </div>
+                <div class="mistakes-display">
+                    <div class="mistakes-filters">
+                        <button class="mistake-filter active" data-filter="all">全部</button>
+                        <button class="mistake-filter" data-filter="math">数学一</button>
+                        <button class="mistake-filter" data-filter="english">英语一</button>
+                        <button class="mistake-filter" data-filter="politics">政治</button>
+                        <button class="mistake-filter" data-filter="data-structure">数据结构</button>
+                        <button class="mistake-filter" data-filter="coa">计算机组成原理</button>
+                        <button class="mistake-filter" data-filter="os">操作系统</button>
+                        <button class="mistake-filter" data-filter="cn">计算机网络</button>
+                        <button class="mistake-filter" data-filter="other">其他</button>
+                    </div>
+                    <ul id="mistakes-list" class="sortable-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学习报告 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习报告</h2>
+            </div>
+            <div class="card-body">
+                <div class="report-controls">
+                    <select id="report-type">
+                        <option value="weekly">周报</option>
+                        <option value="monthly">月报</option>
+                    </select>
+                    <button id="generate-report">生成报告</button>
+                </div>
+                <div id="report-content"></div>
+            </div>
+        </section>
+
+        <!-- 学习进度跟踪 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>科目进度跟踪</h2>
+            </div>
+            <div class="card-body">
+                <div class="subject-progress">
+                    <div class="subject-item">
+                        <span>数学一</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-subject="math"></div>
+                        </div>
+                        <span class="progress-text" id="math-progress">0%</span>
+                    </div>
+                    <div class="subject-item">
+                        <span>英语一</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-subject="english"></div>
+                        </div>
+                        <span class="progress-text" id="english-progress">0%</span>
+                    </div>
+                    <div class="subject-item">
+                        <span>政治</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-subject="politics"></div>
+                        </div>
+                        <span class="progress-text" id="politics-progress">0%</span>
+                    </div>
+                    <div class="subject-item">
+                        <span>408专业课</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-subject="cs"></div>
+                        </div>
+                        <span class="progress-text" id="cs-progress">0%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-controls">
+                    <select id="subject-selector">
+                        <option value="math">数学一</option>
+                        <option value="english">英语一</option>
+                        <option value="politics">政治</option>
+                        <option value="cs">408专业课</option>
+                    </select>
+                    <input type="number" id="progress-input" min="0" max="100" placeholder="进度%">
+                    <button id="update-progress">更新进度</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学习统计图表 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习统计图表</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="studyChart"></canvas>
+                </div>
+                <div class="chart-controls">
+                    <label for="chart-period">统计周期：</label>
+                    <select id="chart-period">
+                        <option value="7">最近7天</option>
+                        <option value="30" selected>最近30天</option>
+                        <option value="90">最近90天</option>
+                    </select>
+                </div>
+                
+                <!-- 科目学习时长饼图 -->
+                <div class="chart-container">
+                    <h3>科目学习时长分配</h3>
+                    <canvas id="subjectPieChart"></canvas>
+                </div>
+                <div class="chart-controls">
+                    <label for="pie-chart-period">统计周期：</label>
+                    <select id="pie-chart-period">
+                        <option value="7">最近7天</option>
+                        <option value="30" selected>最近30天</option>
+                        <option value="90">最近90天</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- 提醒功能 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习提醒</h2>
+            </div>
+            <div class="card-body">
+                <div class="reminder-controls">
+                    <input type="text" id="reminder-text" placeholder="提醒内容">
+                    <input type="date" id="reminder-date">
+                    <input type="time" id="reminder-time">
+                    <button id="add-reminder">添加提醒</button>
+                </div>
+                <ul id="reminder-list" class="sortable-list"></ul>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h2>待办事项</h2>
+            </div>
+            <div class="card-body">
+                <div class="todo-input-area">
+                    <h3>添加新任务</h3>
+                    <div class="todo-controls">
+                        <select id="todo-subject">
+                            <option value="math">数学一</option>
+                            <option value="english">英语一</option>
+                            <option value="politics">政治</option>
+                            <option value="data-structure">数据结构</option>
+                            <option value="coa">计算机组成原理</option>
+                            <option value="os">操作系统</option>
+                            <option value="cn">计算机网络</option>
+                            <option value="other" selected>其他</option>
+                        </select>
+                        <input type="text" id="new-todo" placeholder="输入任务内容...">
+                        <button id="add-todo">添加</button>
+                    </div>
+                </div>
+                
+                <div class="todo-display-area">
+                    <h3>任务列表</h3>
+                    <div class="todo-filters">
+                        <button class="filter-btn active" data-filter="all">全部</button>
+                        <button class="filter-btn" data-filter="math">数学一</button>
+                        <button class="filter-btn" data-filter="english">英语一</button>
+                        <button class="filter-btn" data-filter="politics">政治</button>
+                        <button class="filter-btn" data-filter="data-structure">数据结构</button>
+                        <button class="filter-btn" data-filter="coa">计算机组成原理</button>
+                        <button class="filter-btn" data-filter="os">操作系统</button>
+                        <button class="filter-btn" data-filter="cn">计算机网络</button>
+                        <button class="filter-btn" data-filter="other">其他</button>
+                    </div>
+                    <div class="todo-date-filters">
+                        <button class="date-filter-btn active" data-date-filter="all">全部时间</button>
+                        <button class="date-filter-btn" data-date-filter="today">今日代办</button>
+                        <button class="date-filter-btn" data-date-filter="week">本周代办</button>
+                        <button class="date-filter-btn" data-date-filter="month">本月代办</button>
+                    </div>
+                    <ul id="todo-list" class="sortable-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h2>学习复盘</h2>
+            </div>
+            <div class="card-body">
+                <div class="review-controls">
+                    <select id="review-type">
+                        <option value="daily">日复盘</option>
+                        <option value="weekly">周复盘</option>
+                        <option value="monthly">月复盘</option>
+                    </select>
+                    <input type="date" id="review-date">
+                    <button id="show-calendar">查看历史记录</button>
+                </div>
+                <textarea id="review-input" placeholder="记录今天的学习内容和心得体会..."></textarea>
+                <button id="save-review">保存复盘</button>
+                <div id="review-history"></div>
+                <div id="calendar-view" class="hidden">
+                    <div class="calendar-controls">
+                        <select id="calendar-review-type">
+                            <option value="daily">日复盘</option>
+                            <option value="weekly">周复盘</option>
+                            <option value="monthly">月复盘</option>
+                        </select>
+                        <button id="prev-month">&lt;</button>
+                        <h3 id="calendar-title"></h3>
+                        <button id="next-month">&gt;</button>
+                    </div>
+                    <div class="calendar">
+                        <div class="calendar-weekdays">
+                            <div>日</div>
+                            <div>一</div>
+                            <div>二</div>
+                            <div>三</div>
+                            <div>四</div>
+                            <div>五</div>
+                            <div>六</div>
+                        </div>
+                        <div id="calendar-days" class="calendar-days"></div>
+                    </div>
+                    <div id="calendar-reviews"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据导出 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>数据导出</h2>
+            </div>
+            <div class="card-body">
+                <div class="export-controls">
+                    <button id="export-excel">导出为Excel</button>
+                    <button id="export-json">导出为JSON</button>
+                    <button id="export-pdf">导出为PDF</button>
+                    <button id="backup-data">备份数据</button>
+                    <button id="restore-data">恢复数据</button>
+                    <input type="file" id="restore-file" accept=".json" style="display: none;">
+                </div>
+                <div id="export-status"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- PWA注册 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                .then(function(registration) {
+                    console.log('SW registered: ', registration);
+                })
+                .catch(function(registrationError) {
+                    console.log('SW registration failed: ', registrationError);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
