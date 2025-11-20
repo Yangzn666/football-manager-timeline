@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度森林(gcForest)算法详解 - 增强版</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryBorderColor: '#764ba2',
+                primaryTextColor: '#fff',
+                lineColor: '#667eea'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="enhanced_styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-tree"></i> 深度森林(gcForest)算法详解</h1>
+            <p>融合集成学习与深度学习优势的创新算法 - 在肝硬化脉象诊断中的应用及对脉象仪项目的启示</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#summary"><i class="fas fa-rocket"></i> 核心要点</a></li>
+                <li><a href="#ensemble"><i class="fas fa-cubes"></i> 集成学习</a></li>
+                <li><a href="#gcforest"><i class="fas fa-mountain"></i> 深度森林</a></li>
+                <li><a href="#multigrained"><i class="fas fa-search-plus"></i> 多粒度扫描</a></li>
+                <li><a href="#cascade"><i class="fas fa-water"></i> 级联森林</a></li>
+                <li><a href="#application-case"><i class="fas fa-stethoscope"></i> 应用案例</a></li>
+                <li><a href="#concept-relations-analysis"><i class="fas fa-link"></i> 概念关联解析</a></li>
+                <li><a href="#pulse-innovations"><i class="fas fa-heartbeat"></i> 脉象仪创新点</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <section id="summary">
+            <h2><i class="fas fa-rocket"></i> 核心要点</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>通过本文，我们详细介绍了<span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>算法及其在肝硬化脉象诊断中的应用。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-book"></i> 核心要点总结</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <ul>
+                                <li><span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>算法结合了<span class="keyword" onclick="showTermCard('深度学习')">深度学习</span>和<span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>的优势</li>
+                                <li>适用于<strong style="color: #e53e3e; font-size: 1.1em;">小样本数据集</strong>，特别适合肝硬化脉象诊断</li>
+                                <li>通过<strong style="color: #3182ce; font-size: 1.1em;">多粒度扫描</strong>和<strong style="color: #3182ce; font-size: 1.1em;">级联森林</strong>结构提高性能</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-rocket"></i> 核心要点示意图</h3>
+                        <div class="mermaid" style="min-height: 120px; max-height: 150px; font-size: 12px;">
+                            graph LR
+                                A[深度森林算法] --> B[深度学习]
+                                A --> C[集成学习]
+                                A --> D[小样本数据集]
+                                A --> E[肝硬化脉象诊断]
+                                A --> F[多粒度扫描]
+                                A --> G[级联森林]
+                                A --> H[创新改进]
+                                A --> I[提高性能]
+                                A --> J[提高诊断能力]
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#764ba2,stroke:#4a5568,color:#fff
+                                style C fill:#f093fb,stroke:#4a5568,color:#fff
+                                style D fill:#43e97b,stroke:#4a5568,color:#fff
+                                style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                                style G fill:#667eea,stroke:#4a5568,color:#fff
+                                style H fill:#764ba2,stroke:#4a5568,color:#fff
+                                style I fill:#f093fb,stroke:#4a5568,color:#fff
+                                style J fill:#43e97b,stroke:#4a5568,color:#fff
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ensemble">
+            <h2><i class="fas fa-cubes"></i> 集成学习</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>集成学习通过组合多个基学习器来提高整体性能，其核心思想是"三个臭皮匠，顶个诸葛亮"。在深度森林中，主要使用随机森林作为基学习器。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-chart-line"></i> 集成学习的优势</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. 降低过拟合风险</p>
+                            <p>2. 提高泛化能力</p>
+                            <p>3. 增强鲁棒性</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-exchange-alt"></i> 两种主要集成策略</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p><strong>Bagging：</strong>并行训练多个独立模型，如随机森林</p>
+                            <p><strong>Boosting：</strong>序列化训练模型，每个模型关注前序模型的错误，如AdaBoost</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-microscope"></i> 随机森林工作原理</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>随机森林通过引入两个随机性来增强模型多样性：</p>
+                            <ol>
+                                <li><strong>样本随机性：</strong>通过Bootstrap采样生成不同的训练子集</li>
+                                <li><strong>特征随机性：</strong>每个节点分裂时只考虑特征的随机子集</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-tree"></i> 随机森林结构</h3>
+                        <div class="mermaid">
+                            graph TD
+                                A[训练数据] --> B[决策树1]
+                                A --> C[决策树2]
+                                A --> D[决策树n]
+                                B --> E[投票机制]
+                                C --> E
+                                D --> E
+                                E --> F[最终预测]
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#f093fb,stroke:#4a5568,color:#fff
+                                style C fill:#f093fb,stroke:#4a5568,color:#fff
+                                style D fill:#f093fb,stroke:#4a5568,color:#fff
+                                style E fill:#43e97b,stroke:#4a5568,color:#fff
+                                style F fill:#38f9d7,stroke:#4a5568,color:#fff
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gcforest">
+            <h2><i class="fas fa-mountain"></i> 深度森林(gcForest)</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>在肝硬化脉象诊断中，<span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>通过处理<strong style="color: #e53e3e; font-size: 1.1em;">28维脉象特征</strong>，实现了<strong style="color: #38a169; font-size: 1.1em;">高精度</strong>的分类诊断。作者针对医疗数据的特点进行了多项<strong style="color: #3182ce; font-size: 1.1em;">创新改进</strong>。</p>
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-star"></i> 深度森林核心优势</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. 无需大量调参</p>
+                            <p>2. 适用于小样本数据</p>
+                            <p>3. 具有理论可解释性</p>
+                            <p>4. 计算效率高</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-robot"></i> 与<span class="keyword" onclick="showTermCard('深度学习')">深度学习</span>对比</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p><strong><span class="keyword" onclick="showTermCard('深度神经网络')">深度神经网络</span>：</strong>需要大量数据和调参，黑箱模型</p>
+                            <p><strong><span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>：</strong>对小数据友好，参数少，可解释性强</p>
+                        </div>
+                    </div>
+                    
+                    <div class="details-container">
+                        <div class="details-summary">
+                            <span><i class="fas fa-plus-circle"></i> 深度森林的理论基础</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="details-content" style="display: none;">
+                            <p><span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>的理论基础建立在以下几点：</p>
+                            <ul>
+                                <li><span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>的表示能力随着模型数量增加而增强</li>
+                                <li>层级结构可以逐层抽象<span class="keyword" onclick="showTermCard('特征')">特征</span>表示</li>
+                                <li><span class="keyword" onclick="showTermCard('多粒度扫描')">多粒度扫描</span>可以捕获不同尺度的模式</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-sitemap"></i> 深度森林整体架构</h3>
+                        <div class="mermaid">
+                            graph TD
+                                A[输入特征] --> B[多粒度扫描]
+                                B --> C[级联层1]
+                                C --> D[级联层2]
+                                D --> E[级联层n]
+                                E --> F[输出层]
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#764ba2,stroke:#4a5568,color:#fff
+                                style C fill:#f093fb,stroke:#4a5568,color:#fff
+                                style D fill:#43e97b,stroke:#4a5568,color:#fff
+                                style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="application">
+            <h2><i class="fas fa-chart-bar"></i> 应用场景</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>深度森林在多个领域都有广泛的应用，包括但不限于图像识别、语音识别、自然语言处理等。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-image"></i> 图像识别</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>深度森林可以用于图像分类、目标检测等任务。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-microphone"></i> 语音识别</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>深度森林可以用于语音识别、语音合成等任务。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-file-alt"></i> 自然语言处理</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>深度森林可以用于文本分类、情感分析等任务。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-chart-bar"></i> 应用场景示例</h3>
+                        <div class="mermaid">
+                            graph TD
+                                A[图像识别] --> B[自动驾驶]
+                                A --> C[人脸识别]
+                                B --> D[行人检测]
+                                B --> E[车辆检测]
+                                C --> F[身份验证]
+                                C --> G[情绪识别]
+                                H[语音识别] --> I[智能家居]
+                                H --> J[语音合成]
+                                I --> K[语音指令]
+                                I --> L[语音控制]
+                                M[自然语言处理] --> N[文本分类]
+                                M --> O[情感分析]
+                                N --> P[垃圾信息检测]
+                                N --> Q[情感分类]
+                                O --> R[正面情感]
+                                O --> S[负面情感]
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#764ba2,stroke:#4a5568,color:#fff
+                                style C fill:#f093fb,stroke:#4a5568,color:#fff
+                                style D fill:#43e97b,stroke:#4a5568,color:#fff
+                                style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                                style G fill:#ff9a9e,stroke:#4a5568,color:#333
+                                style H fill:#667eea,stroke:#4a5568,color:#fff
+                                style I fill:#764ba2,stroke:#4a5568,color:#fff
+                                style J fill:#f093fb,stroke:#4a5568,color:#fff
+                                style K fill:#43e97b,stroke:#4a5568,color:#fff
+                                style L fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style M fill:#667eea,stroke:#4a5568,color:#fff
+                                style N fill:#764ba2,stroke:#4a5568,color:#fff
+                                style O fill:#f093fb,stroke:#4a5568,color:#fff
+                                style P fill:#43e97b,stroke:#4a5568,color:#fff
+                                style Q fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style R fill:#ff9a9e,stroke:#4a5568,color:#333
+                                style S fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2><i class="fas fa-check-circle"></i> 总结</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>深度森林是一种强大的集成学习方法，它结合了集成学习的表示能力和深度学习的层级结构，适用于多种应用场景。通过引入多粒度扫描和级联层，深度森林能够有效地捕获数据中的复杂模式，同时保持良好的理论解释性。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="multigrained">
+            <h2><i class="fas fa-search-plus"></i> 多粒度扫描(Multi-Grained Scanning)</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p><span class="keyword" onclick="showTermCard('多粒度扫描')">多粒度扫描</span>通过对原始<span class="keyword" onclick="showTermCard('特征')">特征</span>进行滑动窗口操作，提取不同尺度的<span class="keyword" onclick="showTermCard('特征')">特征</span>表示。这类似于用不同大小的滤波器处理图像，能够捕获不同层次的模式信息。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-ruler"></i> 工作原理</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. 选择不同大小的滑动窗口</p>
+                            <p>2. 对原始<span class="keyword" onclick="showTermCard('特征')">特征</span>进行滑窗扫描</p>
+                            <p>3. 每个窗口内的<span class="keyword" onclick="showTermCard('特征')">特征</span>输入到<span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>器中</p>
+                            <p>4. 汇总所有窗口的输出作为新<span class="keyword" onclick="showTermCard('特征')">特征</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-code"></i> 多粒度扫描的实现</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>多粒度扫描通常通过卷积操作实现，从不同尺度提取特征。这种方法可以捕捉到数据的局部和全局特征。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-search-plus"></i> 多粒度扫描示意图</h3>
+                        <div class="mermaid">
+                            graph LR
+                                A[输入数据] --> B[卷积操作1]
+                                A --> C[卷积操作2]
+                                A --> D[卷积操作3]
+                                B --> E[特征1]
+                                C --> E
+                                D --> E
+                                E --> F[输出特征]
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#764ba2,stroke:#4a5568,color:#fff
+                                style C fill:#f093fb,stroke:#4a5568,color:#fff
+                                style D fill:#43e97b,stroke:#4a5568,color:#fff
+                                style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                                style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                    
+                    <div class="formula">
+                        <p>设窗口大小为w，原始<span class="keyword" onclick="showTermCard('特征')">特征</span>维度为d，则可生成(d-w+1)个子<span class="keyword" onclick="showTermCard('特征')">特征</span></p>
+                        <p>每个子<span class="keyword" onclick="showTermCard('特征')">特征</span>通过<span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>器转换为更高层的<span class="keyword" onclick="showTermCard('特征')">特征</span>表示</p>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-sliders-h"></i> 窗口大小选择策略</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>窗口大小的选择对性能有重要影响：</p>
+                            <ul>
+                                <li><strong>小窗口：</strong>捕获局部细节<span class="keyword" onclick="showTermCard('特征')">特征</span></li>
+                                <li><strong>大窗口：</strong>捕获整体结构<span class="keyword" onclick="showTermCard('特征')">特征</span></li>
+                                <li><strong>多窗口组合：</strong>综合利用多尺度信息</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-border-all"></i> 滑动窗口示意图</h3>
+                        <div class="mermaid">
+                            graph LR
+                                A[f1] --- B[f2] --- C[f3] --- D[f4] --- E[f5] --- F[f6] --- G[f7] --- H[f8]
+                                subgraph 窗口1[窗口大小=3]
+                                    A
+                                    B
+                                    C
+                                end
+                                subgraph 窗口2[窗口大小=3]
+                                    B
+                                    C
+                                    D
+                                end
+                                subgraph 窗口3[窗口大小=3]
+                                    C
+                                    D
+                                    E
+                                end
+                                
+                                style A fill:#667eea,stroke:#4a5568,color:#fff
+                                style B fill:#667eea,stroke:#4a5568,color:#fff
+                                style C fill:#667eea,stroke:#4a5568,color:#fff
+                                style D fill:#667eea,stroke:#4a5568,color:#fff
+                                style E fill:#667eea,stroke:#4a5568,color:#fff
+                                style F fill:#667eea,stroke:#4a5568,color:#fff
+                                style G fill:#667eea,stroke:#4a5568,color:#fff
+                                style H fill:#667eea,stroke:#4a5568,color:#fff
+                        </div>
+                    </div>
+
+            
+            <div class="diagram-container">
+                <h3><i class="fas fa-sync-alt"></i> 多粒度扫描完整流程</h3>
+                <div class="mermaid">
+                    graph LR
+                    A[原始特征] --> B[小窗口扫描]
+                    A --> C[大窗口扫描]
+                    B --> D[特征转换]
+                    C --> E[特征转换]
+                    D --> F[特征拼接]
+                    E --> F
+                    F --> G[新特征表示]
+                    
+                    style A fill:#667eea,stroke:#4a5568,color:#fff
+                    style B fill:#f093fb,stroke:#4a5568,color:#fff
+                    style C fill:#f093fb,stroke:#4a5568,color:#fff
+                    style D fill:#43e97b,stroke:#4a5568,color:#fff
+                    style E fill:#43e97b,stroke:#4a5568,color:#fff
+                    style F fill:#38f9d7,stroke:#4a5568,color:#fff
+                    style G fill:#ff9a9e,stroke:#4a5568,color:#333
+                </div>
+            </div>
+        </div>
+        </section>
+
+        <section id="cascade">
+            <h2><i class="fas fa-water"></i> 级联森林(Cascade Forest)</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>集成学习通过组合多个基学习器来提高整体性能，其核心思想是"<strong style="color: #e53e3e; font-size: 1.1em;">三个臭皮匠，顶个诸葛亮</strong>"。在深度森林中，主要使用<strong style="color: #3182ce; font-size: 1.1em;">随机森林</strong>作为基学习器。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-chart-line"></i> 集成学习的优势</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. <strong style="color: #e53e3e; font-size: 1.05em;">降低过拟合风险</strong></p>
+                            <p>2. <strong style="color: #3182ce; font-size: 1.05em;">提高泛化能力</strong></p>
+                            <p>3. <strong style="color: #38a169; font-size: 1.05em;">增强鲁棒性</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-layer-group"></i> 级联结构特点</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. 层级结构逐层抽象<span class="keyword" onclick="showTermCard('特征')">特征</span></p>
+                            <p>2. 每层包含多个不同的<span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>器</p>
+                            <p>3. 层数可自适应增长</p>
+                            <p>4. 防止<span class="keyword" onclick="showTermCard('过拟合')">过拟合</span>的验证机制</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-process">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>输入<span class="keyword" onclick="showTermCard('特征')">特征</span></h4>
+                            <p>接收来自上一层或原始<span class="keyword" onclick="showTermCard('特征')">特征</span>的输入</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>多模型处理</h4>
+                            <p>多个<span class="keyword" onclick="showTermCard('集成学习')">集成学习</span>器并行处理</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4><span class="keyword" onclick="showTermCard('特征')">特征</span>拼接</h4>
+                            <p>拼接各模型输出作为新<span class="keyword" onclick="showTermCard('特征')">特征</span></p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <h4>传递下层</h4>
+                            <p>输出到下一层继续处理</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-shield-alt"></i> <span class="keyword" onclick="showTermCard('过拟合')">过拟合</span>防护机制</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p><span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>采用<span class="keyword" onclick="showTermCard('交叉验证')">交叉验证</span>机制防止<span class="keyword" onclick="showTermCard('过拟合')">过拟合</span>：</p>
+                            <ul>
+                                <li>每层使用5折<span class="keyword" onclick="showTermCard('交叉验证')">交叉验证</span>生成输出分布</li>
+                                <li>通过性能评估决定是否增加新层</li>
+                                <li>当新层不能显著提升性能时停止增长</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-level-down-alt"></i> 单<span class="keyword" onclick="showTermCard('级联森林')">级联森林</span>结构</h3>
+                        <div class="mermaid">
+                            graph TD
+                            A[输入特征] --> B[随机森林1]
+                            A --> C[随机森林2]
+                            A --> D[K近邻]
+                            B --> E[输出分布]
+                            C --> E
+                            D --> E
+                            E --> F[特征拼接]
+                            F --> G[输出到下一层]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#f093fb,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#f5576c,stroke:#4a5568,color:#fff
+                            style E fill:#43e97b,stroke:#4a5568,color:#fff
+                            style F fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style G fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="diagram-container">
+                <h3><i class="fas fa-stream"></i> <span class="keyword" onclick="showTermCard('级联森林')">级联森林</span>完整结构</h3>
+                <div class="mermaid">
+                    graph TD
+                    A[输入特征] --> B[级联层1]
+                    B --> C[级联层2]
+                    C --> D[级联层3]
+                    D --> E[输出层]
+                    B -.-> F[验证机制]
+                    C -.-> G[验证机制]
+                    D -.-> H[验证机制]
+                    
+                    style A fill:#667eea,stroke:#4a5568,color:#fff
+                    style B fill:#f093fb,stroke:#4a5568,color:#fff
+                    style C fill:#43e97b,stroke:#4a5568,color:#fff
+                    style D fill:#38f9d7,stroke:#4a5568,color:#fff
+                    style E fill:#ff9a9e,stroke:#4a5568,color:#333
+                    style F fill:#ffd8d8,stroke:#4a5568,color:#333
+                    style G fill:#ffd8d8,stroke:#4a5568,color:#333
+                    style H fill:#ffd8d8,stroke:#4a5568,color:#333
+                </div>
+            </div>
+        </section>
+
+        <section id="application-case">
+            <h2><i class="fas fa-stethoscope"></i> 应用案例</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p>在肝硬化脉象诊断中，<span class="keyword" onclick="showTermCard('深度森林')">深度森林</span>通过处理28维脉象<span class="keyword" onclick="showTermCard('特征')">特征</span>，实现了高精度的分类诊断。作者针对医疗数据的特点进行了多项创新改进。</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-exclamation-triangle"></i> 面临的挑战</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>1. 数据量小：医疗数据收集困难</p>
+                            <p>2. 样本不平衡：健康人数据远多于患者</p>
+                            <p>3. <span class="keyword" onclick="showTermCard('特征')">特征</span>复杂：脉象信号包含多种信息</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-lightbulb"></i> 创新改进</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p><strong>双窗口策略：</strong>同时使用7维和14维窗口捕获局部和整体<span class="keyword" onclick="showTermCard('特征')">特征</span></p>
+                            <p><strong>类别划分：</strong>按类别分别训练模型并加权</p>
+                            <p><strong>混合模型：</strong>结合<span class="keyword" onclick="showTermCard('随机森林')">随机森林</span>、K近邻和逻辑回归</p>
+                            <p><strong><span class="keyword" onclick="showTermCard('特征')">特征</span>保留：</strong>保留重要<span class="keyword" onclick="showTermCard('特征')">特征</span>的标准差信息</p>
+                        </div>
+                    </div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <span><i class="fas fa-chart-bar"></i> 性能评估指标</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p>在肝硬化诊断中使用以下评估指标：</p>
+                            <ul>
+                                <li><strong>准确率(Accuracy)：</strong>正确分类样本占总样本的比例</li>
+                                <li><strong>精确率(Precision)：</strong>预测为正例中实际为正例的比例</li>
+                                <li><strong>召回率(Recall)：</strong>实际正例中被正确预测的比例</li>
+                                <li><strong>F1分数：</strong>精确率和召回率的调和平均</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-procedures"></i> 肝硬化诊断工作流程</h3>
+                        <div class="mermaid">
+                            graph TD
+                            A[28维脉象特征] --> B[双窗口扫描]
+                            B --> C[特征降维]
+                            C --> D[级联层1]
+                            D --> E[特征标准差]
+                            D --> F[级联层2]
+                            C --> F
+                            E --> F
+                            F --> G[混合模型]
+                            G --> H[最终诊断]
+                             
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#764ba2,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#43e97b,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                            style G fill:#a8e6cf,stroke:#4a5568,color:#333
+                            style H fill:#d2f7e7,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 添加总结回顾部分 -->
+
+        <!-- 添加概念关联性说明 -->
+        <section id="concept-relations-analysis">
+            <h2><i class="fas fa-link"></i> 概念关联解析</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <h4>各组件如何协同工作</h4>
+                        <p>深度森林的各个组件相互配合，形成完整的解决方案：</p>
+                        <ul>
+                            <li><strong>多粒度扫描</strong>负责从原始数据中提取多层次特征</li>
+                            <li><strong>级联森林</strong>逐层深化特征表示，提高分类准确性</li>
+                            <li><strong>集成学习</strong>提供基础的学习能力，确保模型稳定性</li>
+                        </ul>
+                    </div>
+                    <div class="comparison">
+                        <h4>整体工作流程</h4>
+                        <p>整个过程就像是一个智能诊断系统：</p>
+                        <ol>
+                            <li>首先通过<strong>多粒度扫描</strong>全面分析患者的脉象数据（就像医生仔细观察病人的各种症状）</li>
+                            <li>然后通过<strong>级联森林</strong>逐步提炼关键特征（就像医生从众多症状中找出关键线索）</li>
+                            <li>最后得出诊断结果（就像经验丰富的医生给出最终诊断）</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-sitemap"></i> 概念关系图</h3>
+                        <div class="mermaid">
+                            graph TB
+                            A[深度森林] --> B[集成学习]
+                            A --> C[多粒度扫描]
+                            A --> D[级联森林]
+                            C --> E[特征提取]
+                            D --> F[层级处理]
+                            B --> G[模型融合]
+                            E --> F
+                            F --> G
+                            G --> H[最终预测]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#f093fb,stroke:#4a5568,color:#fff
+                            style C fill:#764ba2,stroke:#4a5568,color:#fff
+                            style D fill:#43e97b,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                            style G fill:#a8e6cf,stroke:#4a5568,color:#333
+                            style H fill:#d2f7e7,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 添加作者创新改进详解 -->
+
+        <!-- 添加概念关联性说明 -->
+        <section id="concept-relations">
+            <h2><i class="fas fa-link"></i> 概念关联解析</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <h4><i class="fas fa-exclamation-circle"></i> 重要概念澄清</h4>
+                        <p>需要明确的是，作者改进的是<strong>深度森林</strong>(deep forest)算法，而非通常所说的<strong>深度学习</strong>(deep learning)。深度森林是南京大学周志华教授提出的一种基于决策树集成的模型，不使用神经网络，特别适合小样本数据场景，这正是肝硬化脉象诊断面临的核心挑战。</p>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-cogs"></i> 一、原始深度森林基本原理</h4>
+                        
+                        <h5>1. 深度森林的两大核心组件</h5>
+                        
+                        <div class="comparison">
+                            <h6><i class="fas fa-search"></i> 多粒度扫描(Multi-grained Scanning)</h6>
+                            <p>想象用不同大小的"放大镜"观察脉象数据：</p>
+                            <ul>
+                                <li>例如用7维窗口滑动扫描28维特征，每次覆盖一部分特征</li>
+                                <li>每个窗口下的特征被送入随机森林，生成类别概率分布</li>
+                                <li>所有窗口结果拼接成新的特征表示(154维)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="comparison">
+                            <h6><i class="fas fa-layer-group"></i> 级联森林(Cascade Forest)</h6>
+                            <p>像搭积木一样，一层层堆叠随机森林：</p>
+                            <ul>
+                                <li>每一层接收上一层的输出作为输入</li>
+                                <li>每层通常包含多个随机森林(2个完全随机森林+2个普通随机森林)</li>
+                                <li>逐层提炼特征，增强表征能力</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-wrench"></i> 二、作者针对肝硬化诊断的创新改进</h4>
+                        
+                        <h5>1. 针对多粒度扫描的改进 (解决数据不均衡)</h5>
+                        
+                        <div class="key-point">
+                            <h6>问题背景：</h6>
+                            <ul>
+                                <li>肝硬化患者数据少，健康人数据多(样本不均衡)</li>
+                                <li>传统深度森林对所有样本同等对待，容易偏向多数类</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="comparison">
+                            <h6>作者的解决方案：</h6>
+                            <ul>
+                                <li><strong>数据子集划分：</strong>根据类别(肝硬化/健康)将数据分成不同子集</li>
+                                <li><strong>差异化建模：</strong>为每个子集训练专门的随机森林模型
+                                    <ul>
+                                        <li>为肝硬化患者数据训练专门的森林</li>
+                                        <li>为健康人数据训练另一个森林</li>
+                                    </ul>
+                                </li>
+                                <li><strong>权重分配：</strong>为不同子集的模型赋予不同权重
+                                    <ul>
+                                        <li>例如：肝硬化模型权重0.6，健康模型权重0.4</li>
+                                        <li>通过加权投票，平衡两类样本的影响</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <h5>2. 针对级联森林的改进 (提升模型多样性)</h5>
+                        
+                        <div class="key-point">
+                            <h6>问题背景：</h6>
+                            <ul>
+                                <li>单一模型容易过拟合或欠拟合</li>
+                                <li>脉象信号复杂，需要从多个角度理解</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="comparison">
+                            <h6>作者的解决方案：</h6>
+                            <ul>
+                                <li><strong>混合算法集成：</strong>在每层加入不同类型的算法
+                                    <ul>
+                                        <li>保留随机森林(处理非线性关系)</li>
+                                        <li>新增K近邻(KNN，关注局部相似性)</li>
+                                        <li>新增Logistic回归(处理线性关系)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>特征保留机制：</strong>
+                                    <ul>
+                                        <li>计算"前k个重要特征的标准差"</li>
+                                        <li>将这些关键特征信息传递到下一层</li>
+                                        <li>防止在级联过程中丢失重要特征</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <h5>3. 双尺度特征工程 (优化信息提取)</h5>
+                        
+                        <div class="comparison">
+                            <h6>具体做法：</h6>
+                            <ul>
+                                <li><strong>7维小窗口：</strong>从28维特征中产生154维特征 → 降维到88维
+                                    <ul>
+                                        <li>捕捉局部细节(如脉搏波形的细微变化)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>14维大窗口：</strong>从28维特征中产生210维特征 → 降维到60维
+                                    <ul>
+                                        <li>捕捉整体模式(如脉象的宏观特征)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="key-point">
+                            <h6>信息流设计：</h6>
+                            <ul>
+                                <li>第一层：只接收7维窗口处理后的88维特征</li>
+                                <li>第二层：合并三部分信息
+                                    <ul>
+                                        <li>14维窗口处理的60维特征</li>
+                                        <li>第一层的输出</li>
+                                        <li>重要特征的标准差</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-chart-line"></i> 三、为什么准确率高达98.57%?</h4>
+                        
+                        <h5>1. 精准匹配医学数据特性</h5>
+                        
+                        <div class="comparison">
+                            <h6>小样本适应性：</h6>
+                            <ul>
+                                <li>传统深度学习需要成千上万样本，而肝硬化数据有限</li>
+                                <li>深度森林+改进设计，即使在训练集占比很小的情况下，准确率依然很高</li>
+                                <li>PDF中提到："即使在训练集占比很小的情况下，其准确率也相差不大"</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="key-point">
+                            <h6>脉象特征全面提取：</h6>
+                            <ul>
+                                <li>作者在第三章使用db7小波基进行滤波，去除噪声和基线漂移</li>
+                                <li>提取时频域和非线性特征，得到高质量的28维特征向量</li>
+                                <li>三部脉象仪同时采集寸、关、尺三部位，提供全面信息</li>
+                            </ul>
+                        </div>
+                        
+                        <h5>2. 数据不均衡的巧妙解决</h5>
+                        
+                        <div class="comparison">
+                            <h6>医疗数据中常见问题：</h6>
+                            <ul>
+                                <li>健康人样本 >> 患者样本</li>
+                                <li>传统算法倾向于将所有样本预测为健康人</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="key-point">
+                            <h6>作者解决方案的效果：</h6>
+                            <ul>
+                                <li>通过数据子集划分和权重分配，使模型关注少数类</li>
+                                <li>减少"假阴性"(将患者误判为健康)的风险，这在医疗诊断中至关重要</li>
+                            </ul>
+                        </div>
+                        
+                        <h5>3. 集成学习的威力</h5>
+                        
+                        <div class="comparison">
+                            <h6>多样性增强：</h6>
+                            <ul>
+                                <li>7个不同模型共同决策(4随机森林+KNN+Logistic+特征标准差)</li>
+                                <li>每个模型犯错的方式不同，集成后错误相互抵消</li>
+                                <li>类似"专家会诊"，比单一专家判断更准确</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="key-point">
+                            <h6>特征互补：</h6>
+                            <ul>
+                                <li>小窗口特征捕捉局部细节</li>
+                                <li>大窗口特征捕捉整体模式</li>
+                                <li>标准差特征保留脉象波动特性</li>
+                                <li>多角度信息融合，全面表征脉象特点</li>
+                            </ul>
+                        </div>
+                        
+                        <h5>4. 实验验证的优势</h5>
+                        
+                        <div class="comparison">
+                            <h6>从PDF中可以看出：</h6>
+                            <ul>
+                                <li>对比SVM、随机森林、Naive Bayes，改进的深度森林准确率显著更高</li>
+                                <li>在小样本Ionosphere和Parkinson数据集上也表现优异</li>
+                                <li>证明了"肝硬化病人脉象信号和正常脉象信号具有可分性"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-robot"></i> 改进深度森林架构</h3>
+                        <div class="mermaid">
+                            graph TD
+                            A[28维脉象特征] --> B[双窗口扫描]
+                            B --> C[特征降维]
+                            C --> D[级联层1]
+                            D --> E[特征标准差]
+                            D --> F[级联层2]
+                            C --> F
+                            E --> F
+                            F --> G[混合模型]
+                            G --> H[最终诊断]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#764ba2,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#43e97b,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                            style G fill:#a8e6cf,stroke:#4a5568,color:#333
+                            style H fill:#d2f7e7,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-trophy"></i> 性能对比结果</h3>
+                        <div class="mermaid">
+                            graph LR
+                            A[改进深度森林] -- 98.57% --> B[准确率]
+                            C[随机森林] -- 90.2% --> B
+                            D[SVM] -- 85.7% --> B
+                            E[朴素贝叶斯] -- 83.4% --> B
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#43e97b,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#f5576c,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                        </div>
+                        <p style="text-align: center; margin-top: 15px;">改进的深度森林相比传统方法准确率提升5-15个百分点</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 添加总结回顾部分 -->
+        <section id="summary-final">
+            <h2><i class="fas fa-brain"></i> 总结回顾</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <h4><i class="fas fa-lightbulb"></i> 核心创新点</h4>
+                        <p>需要明确的是，作者改进的是<strong style="color: #e53e3e; font-size: 1.1em;">深度森林</strong>(deep forest)算法，而非通常所说的<strong style="color: #3182ce; font-size: 1.1em;">深度学习</strong>(deep learning)。深度森林是南京大学周志华教授提出的一种基于决策树集成的模型，不使用神经网络，特别适合<strong style="color: #38a169; font-size: 1.1em;">小样本数据</strong>场景，这正是肝硬化脉象诊断面临的核心挑战。</p>
+                    </div>
+                </div>
+                <div class="text-content">
+                    <div class="key-point">
+                        <h4>核心要点总结</h4>
+                        <ul>
+                            <li><strong>深度森林</strong>是一种结合了集成学习和深度学习优点的新方法</li>
+                            <li><strong>多粒度扫描</strong>通过不同大小的窗口提取多层次特征</li>
+                            <li><strong>级联森林</strong>通过层级结构逐步深化特征表示</li>
+                            <li>相比传统方法，在小样本医疗数据上表现出色</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-rocket"></i> 学习成果</h3>
+                        <div class="mermaid">
+                            graph LR
+                            A[理解基础概念] --> B[掌握核心技术]
+                            B --> C[了解应用场景]
+                            C --> F[掌握深度森林]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#764ba2,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                        <p style="text-align: center; margin-top: 15px;">恭喜您已完成深度森林算法的学习！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 添加对脉象仪项目的创新点借鉴 -->
+        <section id="pulse-innovations">
+            <h2><i class="fas fa-heartbeat"></i> 对脉象仪项目的创新点借鉴</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <h4><i class="fas fa-lightbulb"></i> 深度森林算法对脉象仪项目的启示</h4>
+                        <p>深度森林算法在肝硬化脉象诊断中的成功应用，为我们的基于柔性传感器的多通道智能脉象仪项目提供了宝贵的技术启示和创新思路。结合其他分析，我们可以进一步完善我们的技术方案。</p>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-cogs"></i> 一、多粒度特征提取的借鉴意义</h4>
+                        
+                        <div class="comparison">
+                            <h5>深度森林的多粒度扫描机制：</h5>
+                            <ul>
+                                <li>使用不同大小的滑动窗口(如7维和14维)捕获局部和整体特征</li>
+                                <li>通过集成学习器处理不同尺度的特征子集</li>
+                                <li>将多尺度特征拼接成更丰富的特征表示</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feiman-analogy">
+                            <h5>对脉象仪项目的启示：</h5>
+                            <ul>
+                                <li><strong>时域多尺度分析：</strong>可以借鉴多粒度扫描的思想，在脉象信号处理中采用不同时间窗口分析脉搏波形
+                                    <ul>
+                                        <li>短窗口(如1-2个心动周期)捕捉瞬时变化特征</li>
+                                        <li>长窗口(如30秒-1分钟)捕捉整体趋势和节律特征</li>
+                                    </ul>
+                                </li>
+                                <li><strong>频域多分辨率分析：</strong>结合小波变换等技术，从不同频段提取脉象特征
+                                    <ul>
+                                        <li>高频段特征反映脉搏波的细节变化</li>
+                                        <li>低频段特征反映整体节律和趋势</li>
+                                    </ul>
+                                </li>
+                                <li><strong>空间多位置分析：</strong>利用寸、关、尺三部同步采集的优势
+                                    <ul>
+                                        <li>单部位特征提取(传统方法)</li>
+                                        <li>多部位关联特征提取(创新点)</li>
+                                        <li>部位间差异性特征(中医理论支撑)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>特征维度优化：</strong>借鉴肝硬化论文将2000维数据压缩到28维的方法
+                                    <ul>
+                                        <li>通过小波变换提取时频域和非线性特征</li>
+                                        <li>实现高效特征工程，降低计算复杂度</li>
+                                        <li>提升特征的区分性和代表性</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-layer-group"></i> 二、级联特征学习的借鉴意义</h4>
+                        
+                        <div class="comparison">
+                            <h5>深度森林的级联结构：</h5>
+                            <ul>
+                                <li>层级化特征抽象，逐层深化特征表示</li>
+                                <li>每层包含多个不同类型的集成学习器</li>
+                                <li>通过交叉验证机制防止过拟合</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feiman-analogy">
+                            <h5>对脉象仪项目的启示：</h5>
+                            <ul>
+                                <li><strong>分层信号处理架构：</strong>构建类似级联的脉象信号处理流程
+                                    <ul>
+                                        <li>第一层：基础信号预处理和去噪(0.7-8Hz带通滤波)</li>
+                                        <li>第二层：时域和频域特征提取(小波变换)</li>
+                                        <li>第三层：高阶特征组合和抽象</li>
+                                        <li>第四层：脉象模式识别和分类</li>
+                                    </ul>
+                                </li>
+                                <li><strong>多模型融合诊断：</strong>借鉴混合模型思想
+                                    <ul>
+                                        <li>结合模糊C均值聚类(当前使用)</li>
+                                        <li>引入随机森林处理非线性关系</li>
+                                        <li>整合K近邻算法关注局部相似性</li>
+                                        <li>融合逻辑回归处理线性可分特征</li>
+                                    </ul>
+                                </li>
+                                <li><strong>自适应模型选择：</strong>借鉴自适应层数增长机制
+                                    <ul>
+                                        <li>根据数据复杂度自动调整模型复杂度</li>
+                                        <li>通过验证机制防止过拟合</li>
+                                        <li>动态选择最优特征组合</li>
+                                    </ul>
+                                </li>
+                                <li><strong>级联混合模型架构：</strong>构建两层分类体系
+                                    <ul>
+                                        <li>第一层：使用改进的FCM聚类，将脉象初步分为6类（浮、沉、迟、数、滑、弦）</li>
+                                        <li>第二层：使用混合模型(4个随机森林+KNN+Logistic回归)进行精细分类</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-balance-scale"></i> 三、数据不平衡处理的借鉴意义</h4>
+                        
+                        <div class="comparison">
+                            <h5>深度森林的数据子集划分策略：</h5>
+                            <ul>
+                                <li>按类别将数据划分为不同子集</li>
+                                <li>为不同子集训练专门的模型</li>
+                                <li>通过加权投票平衡各类别影响</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feiman-analogy">
+                            <h5>对脉象仪项目的启示：</h5>
+                            <ul>
+                                <li><strong>脉象类别不平衡问题：</strong>在实际应用中，某些脉象类型(如正常脉)样本远多于其他类型
+                                    <ul>
+                                        <li>借鉴子集划分思想，为不同脉象类型建立专门的特征库</li>
+                                        <li>为稀有脉象类型分配更高权重</li>
+                                        <li>采用集成方法平衡各类别识别准确率</li>
+                                    </ul>
+                                </li>
+                                <li><strong>个体差异处理：</strong>不同个体的脉象特征存在显著差异
+                                    <ul>
+                                        <li>为不同人群(年龄、性别、体质)建立个性化模型</li>
+                                        <li>通过权重调整适应个体差异</li>
+                                        <li>实现个性化脉象识别和诊断</li>
+                                    </ul>
+                                </li>
+                                <li><strong>样本平衡处理：</strong>针对6类脉象进行样本平衡优化
+                                    <ul>
+                                        <li>对样本较少的脉象类型进行数据增强</li>
+                                        <li>采用过采样或欠采样技术平衡各类别样本数量</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-sliders-h"></i> 四、特征重要性保持机制的借鉴意义</h4>
+                        
+                        <div class="comparison">
+                            <h5>深度森林的特征标准差保留机制：</h5>
+                            <ul>
+                                <li>计算重要特征的标准差</li>
+                                <li>将标准差信息传递到下一层</li>
+                                <li>防止关键信息在级联过程中丢失</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feiman-analogy">
+                            <h5>对脉象仪项目的启示：</h5>
+                            <ul>
+                                <li><strong>关键脉象特征保持：</strong>脉象诊断中某些特征特别关键(如脉率变异性)
+                                    <ul>
+                                        <li>识别并标记对脉象分类最重要的特征</li>
+                                        <li>在多层处理中保持这些特征的完整性</li>
+                                        <li>监控特征在处理过程中的变化情况</li>
+                                    </ul>
+                                </li>
+                                <li><strong>不确定性量化：</strong>借鉴标准差思想量化诊断不确定性
+                                    <ul>
+                                        <li>计算诊断结果的置信度</li>
+                                        <li>对于低置信度结果提供预警</li>
+                                        <li>支持医生进行进一步诊断</li>
+                                    </ul>
+                                </li>
+                                <li><strong>特征保留机制实施：</strong>将每类脉象的关键特征标准差传递到下一层
+                                    <ul>
+                                        <li>识别6类脉象中最具区分性的特征（如浮脉的"脉率"特征，沉脉的"脉幅"特征）</li>
+                                        <li>实现特征传递机制，防止关键信息丢失</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-detail">
+                        <h4><i class="fas fa-chart-line"></i> 五、性能提升预期与实施建议</h4>
+                        
+                        <div class="comparison">
+                            <h5>当前项目与优化后性能对比：</h5>
+                            <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                                <tr style="background-color: #f0f9ff;">
+                                    <th style="border: 1px solid #ddd; padding: 8px;">指标</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px;">当前项目</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px;">优化后预测</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px;">提升幅度</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">分类准确率</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">92.5%</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">97.5%+</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">5%+</td>
+                                </tr>
+                                <tr style="background-color: #f0f9ff;">
+                                    <td style="border: 1px solid #ddd; padding: 8px;">对小样本的适应性</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">中等</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">强</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">显著提升</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">数据不均衡处理</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">一般</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">优秀</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">显著提升</td>
+                                </tr>
+                                <tr style="background-color: #f0f9ff;">
+                                    <td style="border: 1px solid #ddd; padding: 8px;">模型鲁棒性</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">中等</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">高</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">显著提升</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="key-point">
+                            <h5>具体实施步骤建议：</h5>
+                            <ol>
+                                <li><strong>数据准备阶段：</strong>
+                                    <ul>
+                                        <li>统一脉象特征提取标准，将脉象特征压缩到28维</li>
+                                        <li>对6类脉象进行样本平衡处理</li>
+                                    </ul>
+                                </li>
+                                <li><strong>特征工程阶段：</strong>
+                                    <ul>
+                                        <li>采用小波变换提取时频域特征</li>
+                                        <li>为每类脉象设计专门的特征窗口</li>
+                                    </ul>
+                                </li>
+                                <li><strong>模型设计阶段：</strong>
+                                    <ul>
+                                        <li>第一层：改进的FCM聚类，初步分类</li>
+                                        <li>第二层：混合模型(4个随机森林+KNN+Logistic回归)进行精细分类</li>
+                                        <li>实现特征保留机制</li>
+                                    </ul>
+                                </li>
+                                <li><strong>系统集成阶段：</strong>
+                                    <ul>
+                                        <li>将新算法集成到现有Web可视化平台</li>
+                                        <li>添加新算法的可视化展示</li>
+                                    </ul>
+                                </li>
+                                <li><strong>性能验证阶段：</strong>
+                                    <ul>
+                                        <li>使用交叉验证评估新算法</li>
+                                        <li>与现有FCM算法对比测试</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="key-point">
+                        <h4><i class="fas fa-rocket"></i> 具体实施建议</h4>
+                        <div class="feiman-example">
+                            <ul>
+                                <li><strong>算法层面：</strong>在现有模糊C均值聚类基础上，引入随机森林等集成学习方法，构建混合模型架构</li>
+                                <li><strong>特征工程：</strong>借鉴多粒度扫描思想，开发多尺度脉象特征提取模块，并通过小波变换实现高效特征压缩</li>
+                                <li><strong>模型优化：</strong>采用级联结构逐步抽象脉象特征，提高分类准确率，预期可提升5%以上</li>
+                                <li><strong>数据处理：</strong>针对脉象类别不平衡问题，实施加权处理策略和样本平衡技术</li>
+                                <li><strong>系统集成：</strong>在Web可视化平台中增加模型融合和结果解释功能，并提供置信度展示</li>
+                                <li><strong>渐进式实施：</strong>建议在现有FCM算法基础上，逐步引入改进点，先在小范围数据上测试，再逐步推广到整个系统</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+</```
+                <div class="diagram-content">
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-project-diagram"></i> 脉象仪创新架构设想</h3>
+                        <div class="mermaid">
+                            graph TD
+                            A[多通道脉象采集] --> B[多尺度特征提取]
+                            B --> C[级联特征学习]
+                            C --> D[多模型融合诊断]
+                            D --> E[结果可视化展示]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#764ba2,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#43e97b,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-exchange-alt"></i> 技术融合路径</h3>
+                        <div class="mermaid">
+                            graph LR
+                            A[深度森林算法] --> B[多粒度扫描]
+                            A --> C[级联森林]
+                            A --> D[数据不均衡处理]
+                            A --> E[特征保持机制]
+                            B --> F[脉象仪项目]
+                            C --> F
+                            D --> F
+                            E --> F
+                            F --> G[性能提升]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#f093fb,stroke:#4a5568,color:#fff
+                            style C fill:#43e97b,stroke:#4a5568,color:#fff
+                            style D fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style E fill:#ff9a9e,stroke:#4a5568,color:#333
+                            style F fill:#a8e6cf,stroke:#4a5568,color:#333
+                            style G fill:#d2f7e7,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-container">
+                        <h3><i class="fas fa-cube"></i> 级联混合模型架构</h3>
+                        <div class="mermaid">
+                            graph TD
+                            A[脉象数据输入] --> B[特征提取与降维]
+                            B --> C[第一层: FCM聚类]
+                            C --> D[第二层: 混合模型]
+                            D --> E[最终分类结果]
+                            D --> F[置信度评估]
+                            
+                            style A fill:#667eea,stroke:#4a5568,color:#fff
+                            style B fill:#764ba2,stroke:#4a5568,color:#fff
+                            style C fill:#f093fb,stroke:#4a5568,color:#fff
+                            style D fill:#43e97b,stroke:#4a5568,color:#fff
+                            style E fill:#38f9d7,stroke:#4a5568,color:#fff
+                            style F fill:#ff9a9e,stroke:#4a5568,color:#333
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><i class="fas fa-tree"></i> 深度森林(gcForest)算法详解 - 面向大学生的机器学习教程 - 对脉象仪项目的启示</p>
+        </div>
+    </footer>
+
+    <script>
+        // 添加测验功能
+        function checkAnswer(questionName, correctAnswer) {
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            const feedbackElement = document.getElementById(`feedback-${questionName}`);
+            
+            if (!selectedOption) {
+                feedbackElement.innerHTML = '<p style="color: orange;"><i class="fas fa-exclamation-circle"></i> 请选择一个答案</p>';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswer) {
+                feedbackElement.innerHTML = '<p style="color: green;"><i class="fas fa-check-circle"></i> 正确！</p>';
+            } else {
+                feedbackElement.innerHTML = '<p style="color: red;"><i class="fas fa-times-circle"></i> 不正确，请再仔细阅读相关内容</p>';
+            }
+        }
+        
+        // 保存反思内容
+        function saveReflection() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            if (reflectionText.trim() !== '') {
+                alert('您的思考已保存！继续保持这种学习方式！');
+                // 实际项目中这里可能会将内容保存到服务器或本地存储
+            } else {
+                alert('请输入您的思考内容');
+            }
+        }
+        
+        // 术语卡片数据
+        const termDefinitions = {
+            "深度森林": {
+                title: "深度森林 (gcForest)",
+                content: "由南京大学周志华教授团队提出的基于决策树的深度学习模型。它结合了深度学习的层级结构表示能力和集成学习的强大性能，特别适用于小样本数据集。深度森林无需梯度计算和反向传播，对超参数不敏感，具有良好的理论解释性。"
+            },
+            "集成学习": {
+                title: "集成学习 (Ensemble Learning)",
+                content: "通过组合多个基学习器来提高整体性能的机器学习方法。核心思想是'三个臭皮匠，顶个诸葛亮'。在深度森林中，主要使用随机森林作为基学习器。集成学习可以降低过拟合风险、提高泛化能力和增强鲁棒性。"
+            },
+            "多粒度扫描": {
+                title: "多粒度扫描 (Multi-Grained Scanning)",
+                content: "通过对原始特征进行滑动窗口操作，提取不同尺度的特征表示的技术。类似于用不同大小的滤波器处理图像，能够捕获不同层次的模式信息。在深度森林中，多粒度扫描负责从原始数据中提取多层次特征。"
+            },
+            "级联森林": {
+                title: "级联森林 (Cascade Forest)",
+                content: "深度森林的核心结构，通过逐层堆叠集成学习器来逐级抽象特征。每一层的输出都会与原始特征拼接后输入到下一层。级联森林具有层级结构逐层抽象特征、每层包含多个不同的集成学习器、层数可自适应增长、防止过拟合的验证机制等特点。"
+            },
+            "随机森林": {
+                title: "随机森林 (Random Forest)",
+                content: "一种集成学习算法，通过构建多个决策树并汇总它们的预测结果来进行分类或回归。随机森林通过引入样本随机性（Bootstrap采样）和特征随机性（每个节点分裂时只考虑特征的随机子集）来增强模型多样性。"
+            },
+            "特征": {
+                title: "特征 (Features)",
+                content: "描述样本的属性或特性。在机器学习中，特征是用于训练模型的输入变量。例如，在肝硬化诊断中，脉象的强度、频率、波形等都是特征。好的特征能够更好地表示数据的本质属性，有助于提高模型的性能。"
+            },
+            "交叉验证": {
+                title: "交叉验证 (Cross Validation)",
+                content: "一种评估机器学习模型性能的技术。通过将数据集分割成多个子集，轮流将其中一个子集作为验证集，其余作为训练集，从而充分利用数据进行模型评估。深度森林采用5折交叉验证来防止过拟合。"
+            },
+            "过拟合": {
+                title: "过拟合 (Overfitting)",
+                content: "机器学习中的一个问题，模型在训练数据上表现很好，但在新数据上表现较差。过拟合的模型过于复杂，记住了训练数据的噪声和细节，而没有学习到数据的一般规律。深度森林通过交叉验证等机制来防止过拟合。"
+            }
+        };
+        
+        // 显示术语卡片
+        function showTermCard(term) {
+            const modal = document.getElementById('term-modal');
+            const cardTitle = document.getElementById('term-card-title');
+            const cardContent = document.getElementById('term-card-content');
+            
+            if (termDefinitions[term]) {
+                cardTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${termDefinitions[term].title}`;
+                cardContent.innerHTML = `<p>${termDefinitions[term].content}</p>`;
+                modal.style.display = 'flex';
+            }
+        }
+        
+        // 关闭术语卡片
+        function closeTermCard() {
+            document.getElementById('term-modal').style.display = 'none';
+        }
+        
+        // 更安全的关键词高亮函数
+        function highlightKeywords() {
+            const keywords = Object.keys(termDefinitions);
+            // 按长度排序，优先匹配长词
+            keywords.sort((a, b) => b.length - a.length);
+            
+            // 定义要处理的容器
+            const containers = document.querySelectorAll('.text-content, .key-point, .comparison, .technical-detail');
+            
+            containers.forEach(container => {
+                // 处理容器内所有文本节点
+                const walker = document.createTreeWalker(
+                    container,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+                
+                const textNodes = [];
+                let node;
+                while (node = walker.nextNode()) {
+                    // 排除已经处理过的节点和表单元素
+                    if (!node.parentElement.closest('.keyword') && 
+                        !node.parentElement.closest('textarea') && 
+                        !node.parentElement.closest('input')) {
+                        textNodes.push(node);
+                    }
+                }
+                
+                textNodes.forEach(textNode => {
+                    const fragment = document.createDocumentFragment();
+                    let text = textNode.textContent;
+                    let lastIndex = 0;
+                    
+                    // 创建一个临时div来处理文本
+                    const tempDiv = document.createElement('div');
+                    tempDiv.textContent = text;
+                    let tempHtml = tempDiv.innerHTML;
+                    
+                    // 为每个关键词创建正则表达式并替换
+                    keywords.forEach(keyword => {
+                        const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+                        tempHtml = tempHtml.replace(regex, 
+                            `<span class="keyword" onclick="showTermCard('${keyword}')">${keyword}</span>`);
+                    });
+                    
+                    tempDiv.innerHTML = tempHtml;
+                    
+                    // 将处理后的内容添加到片段中
+                    while (tempDiv.firstChild) {
+                        fragment.appendChild(tempDiv.firstChild);
+                    }
+                    
+                    // 替换原文本节点
+                    textNode.parentNode.replaceChild(fragment, textNode);
+                });
+            });
+        }
+        
+        // 页面加载完成后初始化术语高亮
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                highlightKeywords();
+            } catch (e) {
+                console.error("术语高亮功能出错:", e);
+            }
+            
+            // 为模态框添加点击背景关闭功能
+            const modal = document.getElementById('term-modal');
+            if (modal) {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeTermCard();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- 术语卡片模态框 -->
+    <div id="term-modal" class="term-modal">
+        <div class="term-card">
+            <button class="term-card-close" onclick="closeTermCard()">&times;</button>
+            <h3 id="term-card-title"></h3>
+            <div class="term-card-content" id="term-card-content"></div>
+        </div>
+    </div>
+
+    <script src="enhanced_script.js"></script>
+
+    <!-- 图表放大模态框 -->
+    <div id="diagram-modal" class="diagram-modal">
+        <div class="diagram-modal-content">
+            <span class="diagram-modal-close">&times;</span>
+            <div id="diagram-modal-body"></div>
+        </div>
+    </div>
+</body>
+</html>
+
