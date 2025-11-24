@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 数据导出">
+    <title>数据导出 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 数据导出
+        </nav>
+    </header>
+
+    <main>
+        <!-- 数据导出 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>数据导出</h2>
+            </div>
+            <div class="card-body">
+                <div class="export-controls">
+                    <button id="export-excel">导出为Excel</button>
+                    <button id="export-json">导出为JSON</button>
+                    <button id="export-pdf">导出为PDF</button>
+                    <button id="backup-data">备份数据</button>
+                    <button id="restore-data">恢复数据</button>
+                    <input type="file" id="restore-file" accept=".json" style="display: none;">
+                </div>
+                <div id="export-status"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            setupExportButtons();
+        });
+    </script>
+</body>
+</html>

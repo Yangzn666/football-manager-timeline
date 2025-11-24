@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 学习报告">
+    <title>学习报告 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 学习报告
+        </nav>
+    </header>
+
+    <main>
+        <!-- 学习报告 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习报告</h2>
+            </div>
+            <div class="card-body">
+                <div class="report-controls">
+                    <select id="report-type">
+                        <option value="weekly">周报</option>
+                        <option value="monthly">月报</option>
+                    </select>
+                    <button id="generate-report">生成报告</button>
+                </div>
+                <div id="report-content"></div>
+            </div>
+        </section>
+
+        <!-- 学习统计图表 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习统计图表</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="studyChart"></canvas>
+                </div>
+                <div class="chart-controls">
+                    <label for="chart-period">统计周期：</label>
+                    <select id="chart-period">
+                        <option value="7">最近7天</option>
+                        <option value="30" selected>最近30天</option>
+                        <option value="90">最近90天</option>
+                    </select>
+                </div>
+                
+                <!-- 科目学习时长饼图 -->
+                <div class="chart-container">
+                    <h3>科目学习时长分配</h3>
+                    <canvas id="subjectPieChart"></canvas>
+                </div>
+                <div class="chart-controls">
+                    <label for="pie-chart-period">统计周期：</label>
+                    <select id="pie-chart-period">
+                        <option value="7">最近7天</option>
+                        <option value="30" selected>最近30天</option>
+                        <option value="90">最近90天</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            setupCharts();
+        });
+    </script>
+</body>
+</html>

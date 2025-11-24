@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 学习计划">
+    <title>学习计划 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 学习计划
+        </nav>
+    </header>
+
+    <main>
+        <!-- 学习计划制定与跟踪 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习计划</h2>
+            </div>
+            <div class="card-body">
+                <div class="plan-controls">
+                    <select id="plan-stage">
+                        <option value="foundation">基础阶段</option>
+                        <option value="improvement">强化阶段</option>
+                        <option value="冲刺阶段">冲刺阶段</option>
+                    </select>
+                    <button id="generate-plan">生成计划</button>
+                </div>
+                <div class="plan-display">
+                    <h3>计划任务</h3>
+                    <ul id="plan-tasks" class="sortable-list"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            loadPlanTasks();
+        });
+    </script>
+</body>
+</html>

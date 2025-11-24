@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#8B4513">
+    <meta name="description" content="考研备考系统 - 知识点掌握情况">
+    <title>知识点掌握情况 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>📚 知识点管理</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 知识点掌握情况
+        </nav>
+    </header>
+
+    <main>
+        <div class="onenote-layout">
+            <!-- 侧边栏 - 科目导航 -->
+            <aside class="onenote-sidebar">
+                <div class="sidebar-header">
+                    <h2>📚 科目导航</h2>
+                </div>
+                <ul class="subject-nav">
+                    <li class="subject-item active" data-subject="all">
+                        <span class="subject-icon">📋</span>
+                        <span class="subject-name">全部知识点</span>
+                    </li>
+                    <li class="subject-item" data-subject="math">
+                        <span class="subject-icon">🔢</span>
+                        <span class="subject-name">数学一</span>
+                    </li>
+                    <li class="subject-item" data-subject="english">
+                        <span class="subject-icon">🔤</span>
+                        <span class="subject-name">英语一</span>
+                    </li>
+                    <li class="subject-item" data-subject="politics">
+                        <span class="subject-icon">🏛️</span>
+                        <span class="subject-name">政治</span>
+                    </li>
+                    <li class="subject-item" data-subject="data-structure">
+                        <span class="subject-icon">📊</span>
+                        <span class="subject-name">数据结构</span>
+                    </li>
+                    <li class="subject-item" data-subject="coa">
+                        <span class="subject-icon">⚙️</span>
+                        <span class="subject-name">计算机组成原理</span>
+                    </li>
+                    <li class="subject-item" data-subject="os">
+                        <span class="subject-icon">💻</span>
+                        <span class="subject-name">操作系统</span>
+                    </li>
+                    <li class="subject-item" data-subject="cn">
+                        <span class="subject-icon">🌐</span>
+                        <span class="subject-name">计算机网络</span>
+                    </li>
+                </ul>
+                
+                <div class="sidebar-section">
+                    <h3>📌 掌握状态</h3>
+                    <ul class="status-filters">
+                        <li class="filter-item active" data-filter="all">
+                            <span class="filter-color all"></span>
+                            <span class="filter-name">全部状态</span>
+                            <span class="filter-count" id="count-all">0</span>
+                        </li>
+                        <li class="filter-item" data-filter="unmastered">
+                            <span class="filter-color unmastered"></span>
+                            <span class="filter-name">未掌握</span>
+                            <span class="filter-count" id="count-unmastered">0</span>
+                        </li>
+                        <li class="filter-item" data-filter="basic">
+                            <span class="filter-color basic"></span>
+                            <span class="filter-name">基本掌握</span>
+                            <span class="filter-count" id="count-basic">0</span>
+                        </li>
+                        <li class="filter-item" data-filter="proficient">
+                            <span class="filter-color proficient"></span>
+                            <span class="filter-name">熟练掌握</span>
+                            <span class="filter-count" id="count-proficient">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- 主内容区 -->
+            <div class="onenote-main">
+                <!-- 添加知识点表单 -->
+                <section class="card knowledge-form-card">
+                    <div class="card-header">
+                        <h2>➕ 添加知识点</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="knowledge-form">
+                            <div class="form-row">
+                                <select id="knowledge-subject" class="form-control">
+                                    <option value="math">🔢 数学一</option>
+                                    <option value="english">🔤 英语一</option>
+                                    <option value="politics">🏛️ 政治</option>
+                                    <option value="data-structure">📊 数据结构</option>
+                                    <option value="coa">⚙️ 计算机组成原理</option>
+                                    <option value="os">💻 操作系统</option>
+                                    <option value="cn">🌐 计算机网络</option>
+                                </select>
+                                <input type="text" id="new-knowledge-point" class="form-control" placeholder="输入知识点名称...">
+                                <button id="add-knowledge-point" class="btn-primary">添加</button>
+                            </div>
+                            <div class="form-row">
+                                <textarea id="knowledge-description" class="form-control" placeholder="知识点详细描述..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 知识点列表 -->
+                <section class="card knowledge-list-card">
+                    <div class="card-header">
+                        <h2>📖 知识点列表</h2>
+                        <div class="knowledge-actions">
+                            <button id="expand-all" class="btn-secondary">展开全部</button>
+                            <button id="collapse-all" class="btn-secondary">折叠全部</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="knowledge-display">
+                            <ul id="knowledge-points-list" class="knowledge-list"></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 知识点详情面板 -->
+                <section class="card knowledge-detail-card hidden">
+                    <div class="card-header">
+                        <h2 id="detail-title">知识点详情</h2>
+                        <div class="detail-actions">
+                            <button id="edit-detail" class="btn-secondary">编辑</button>
+                            <button id="close-detail" class="btn-secondary">关闭</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="knowledge-detail-content">
+                            <div class="detail-section">
+                                <h3>📝 描述</h3>
+                                <div id="detail-description" class="detail-content"></div>
+                            </div>
+                            <div class="detail-section">
+                                <h3>📊 掌握状态</h3>
+                                <div id="detail-status" class="detail-content">
+                                    <span class="status-badge" id="status-badge"></span>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h3>📚 所属科目</h3>
+                                <div id="detail-subject" class="detail-content"></div>
+                            </div>
+                            <div class="detail-section">
+                                <h3>⏰ 创建时间</h3>
+                                <div id="detail-created" class="detail-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            loadKnowledgePoints();
+            setupKnowledgeEventListeners();
+            
+            // 绑定添加知识点按钮事件
+            document.getElementById('add-knowledge-point').addEventListener('click', addKnowledgePoint);
+        });
+        
+        // 添加知识点功能
+        async function addKnowledgePoint() {
+            const subjectSelect = document.getElementById('knowledge-subject');
+            const nameInput = document.getElementById('new-knowledge-point');
+            const descriptionInput = document.getElementById('knowledge-description');
+            
+            const subject = subjectSelect.value;
+            const name = nameInput.value.trim();
+            const description = descriptionInput.value.trim();
+            
+            if (!name) {
+                alert('请输入知识点名称');
+                return;
+            }
+            
+            const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+            const created = new Date().toLocaleString('zh-CN');
+            const status = 'unmastered'; // 默认状态为未掌握
+            
+            try {
+                await studyDB.add('knowledgePoints', {
+                    id: id,
+                    subject: subject,
+                    name: name,
+                    description: description,
+                    status: status,
+                    created: created
+                });
+                
+                // 添加到DOM
+                addKnowledgePointToDOM(subject, name, description, status, created, id);
+                
+                // 清空输入框
+                nameInput.value = '';
+                descriptionInput.value = '';
+                
+                // 更新计数
+                updateKnowledgeCounts();
+            } catch (error) {
+                console.error('添加知识点失败:', error);
+                alert('添加知识点失败，请重试');
+            }
+        }
+        
+        // 添加知识点到DOM
+        function addKnowledgePointToDOM(subject, name, description, status, created, id) {
+            const list = document.getElementById('knowledge-points-list');
+            const li = document.createElement('li');
+            li.className = 'knowledge-item';
+            li.dataset.subject = subject;
+            li.dataset.status = status;
+            li.dataset.id = id;
+            
+            const subjectMap = {
+                'math': '数学一',
+                'english': '英语一',
+                'politics': '政治',
+                'data-structure': '数据结构',
+                'coa': '计算机组成原理',
+                'os': '操作系统',
+                'cn': '计算机网络'
+            };
+            
+            const statusMap = {
+                'unmastered': '未掌握',
+                'basic': '基本掌握',
+                'proficient': '熟练掌握'
+            };
+            
+            const statusClassMap = {
+                'unmastered': 'status-unmastered',
+                'basic': 'status-basic',
+                'proficient': 'status-proficient'
+            };
+            
+            li.innerHTML = `
+                <div class="knowledge-item-header">
+                    <div class="knowledge-title">${name}</div>
+                    <div class="knowledge-subject">${subjectMap[subject] || subject}</div>
+                    <div class="knowledge-status ${statusClassMap[status]}">${statusMap[status]}</div>
+                </div>
+                <div class="knowledge-item-content" style="display: none;">
+                    <div class="knowledge-description">${description || '暂无描述'}</div>
+                    <div class="knowledge-actions-row">
+                        <button class="btn-secondary change-status" data-status="unmastered">未掌握</button>
+                        <button class="btn-secondary change-status" data-status="basic">基本掌握</button>
+                        <button class="btn-secondary change-status" data-status="proficient">熟练掌握</button>
+                        <button class="btn-secondary delete-knowledge">删除</button>
+                    </div>
+                </div>
+            `;
+            
+            // 添加点击事件展开/折叠
+            const header = li.querySelector('.knowledge-item-header');
+            header.addEventListener('click', function() {
+                const content = li.querySelector('.knowledge-item-content');
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    li.classList.add('expanded');
+                } else {
+                    content.style.display = 'none';
+                    li.classList.remove('expanded');
+                }
+            });
+            
+            // 添加状态变更事件
+            const statusButtons = li.querySelectorAll('.change-status');
+            statusButtons.forEach(button => {
+                button.addEventListener('click', async function(e) {
+                    e.stopPropagation();
+                    const newStatus = this.dataset.status;
+                    try {
+                        // 更新数据库
+                        const points = await studyDB.getAll('knowledgePoints');
+                        const point = points.find(p => p.id === id);
+                        if (point) {
+                            point.status = newStatus;
+                            await studyDB.update('knowledgePoints', point);
+                            
+                            // 更新UI
+                            const statusElement = li.querySelector('.knowledge-status');
+                            const statusClassMap = {
+                                'unmastered': 'status-unmastered',
+                                'basic': 'status-basic',
+                                'proficient': 'status-proficient'
+                            };
+                            
+                            const statusMap = {
+                                'unmastered': '未掌握',
+                                'basic': '基本掌握',
+                                'proficient': '熟练掌握'
+                            };
+                            
+                            statusElement.className = 'knowledge-status ' + statusClassMap[newStatus];
+                            statusElement.textContent = statusMap[newStatus];
+                            li.dataset.status = newStatus;
+                            
+                            // 更新计数
+                            updateKnowledgeCounts();
+                        }
+                    } catch (error) {
+                        console.error('更新知识点状态失败:', error);
+                    }
+                });
+            });
+            
+            // 添加删除事件
+            const deleteButton = li.querySelector('.delete-knowledge');
+            deleteButton.addEventListener('click', async function(e) {
+                e.stopPropagation();
+                if (confirm('确定要删除这个知识点吗？')) {
+                    try {
+                        await studyDB.delete('knowledgePoints', id);
+                        li.remove();
+                        updateKnowledgeCounts();
+                    } catch (error) {
+                        console.error('删除知识点失败:', error);
+                        alert('删除知识点失败，请重试');
+                    }
+                }
+            });
+            
+            list.appendChild(li);
+        }
+        
+        // 加载知识点
+        async function loadKnowledgePoints(subject = 'all') {
+            try {
+                const list = document.getElementById('knowledge-points-list');
+                list.innerHTML = '';
+                
+                const points = await studyDB.getAll('knowledgePoints');
+                points.forEach(point => {
+                    if (subject === 'all' || point.subject === subject) {
+                        addKnowledgePointToDOM(
+                            point.subject, 
+                            point.name, 
+                            point.description, 
+                            point.status, 
+                            point.created, 
+                            point.id
+                        );
+                    }
+                });
+                
+                updateKnowledgeCounts();
+            } catch (error) {
+                console.error('加载知识点失败:', error);
+            }
+        }
+        
+        // 更新知识点计数
+        async function updateKnowledgeCounts() {
+            try {
+                const points = await studyDB.getAll('knowledgePoints');
+                
+                const counts = {
+                    'all': points.length,
+                    'unmastered': points.filter(p => p.status === 'unmastered').length,
+                    'basic': points.filter(p => p.status === 'basic').length,
+                    'proficient': points.filter(p => p.status === 'proficient').length
+                };
+                
+                document.getElementById('count-all').textContent = counts.all;
+                document.getElementById('count-unmastered').textContent = counts.unmastered;
+                document.getElementById('count-basic').textContent = counts.basic;
+                document.getElementById('count-proficient').textContent = counts.proficient;
+            } catch (error) {
+                console.error('更新知识点计数失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 提醒事项">
+    <title>提醒事项 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 提醒事项
+        </nav>
+    </header>
+
+    <main>
+        <!-- 提醒功能 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>学习提醒</h2>
+            </div>
+            <div class="card-body">
+                <div class="reminder-controls">
+                    <input type="text" id="reminder-text" placeholder="提醒内容">
+                    <input type="date" id="reminder-date">
+                    <input type="time" id="reminder-time">
+                    <button id="add-reminder">添加提醒</button>
+                </div>
+                <ul id="reminder-list" class="sortable-list"></ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            loadReminders();
+        });
+    </script>
+</body>
+</html>

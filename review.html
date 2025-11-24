@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 学习复盘">
+    <title>学习复盘 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 学习复盘
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <div class="card-header">
+                <h2>学习复盘</h2>
+            </div>
+            <div class="card-body">
+                <div class="review-controls">
+                    <select id="review-type">
+                        <option value="daily">日复盘</option>
+                        <option value="weekly">周复盘</option>
+                        <option value="monthly">月复盘</option>
+                    </select>
+                    <input type="date" id="review-date">
+                    <button id="show-calendar">查看历史记录</button>
+                </div>
+                <textarea id="review-input" placeholder="记录今天的学习内容和心得体会..."></textarea>
+                <button id="save-review">保存复盘</button>
+                <div id="review-history"></div>
+                <div id="calendar-view" class="hidden">
+                    <div class="calendar-controls">
+                        <select id="calendar-review-type">
+                            <option value="daily">日复盘</option>
+                            <option value="weekly">周复盘</option>
+                            <option value="monthly">月复盘</option>
+                        </select>
+                        <button id="prev-month">&lt;</button>
+                        <h3 id="calendar-title"></h3>
+                        <button id="next-month">&gt;</button>
+                    </div>
+                    <div class="calendar">
+                        <div class="calendar-weekdays">
+                            <div>日</div>
+                            <div>一</div>
+                            <div>二</div>
+                            <div>三</div>
+                            <div>四</div>
+                            <div>五</div>
+                            <div>六</div>
+                        </div>
+                        <div id="calendar-days" class="calendar-days"></div>
+                    </div>
+                    <div id="calendar-reviews"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            loadReviews();
+        });
+    </script>
+</body>
+</html>

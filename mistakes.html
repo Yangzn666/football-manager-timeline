@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="考研备考系统 - 错题本">
+    <title>错题本 - 考研备考系统</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+</head>
+<body>
+    <header>
+        <h1>考研备考系统</h1>
+        <nav class="breadcrumb">
+            <a href="index.html">首页</a> > 错题本
+        </nav>
+    </header>
+
+    <main>
+        <!-- 错题本 -->
+        <section class="card">
+            <div class="card-header">
+                <h2>错题本</h2>
+            </div>
+            <div class="card-body">
+                <div class="mistakes-input">
+                    <select id="mistake-subject">
+                        <option value="math">数学一</option>
+                        <option value="english">英语一</option>
+                        <option value="politics">政治</option>
+                        <option value="data-structure">数据结构</option>
+                        <option value="coa">计算机组成原理</option>
+                        <option value="os">操作系统</option>
+                        <option value="cn">计算机网络</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <textarea id="mistake-content" placeholder="记录错题内容、错误原因和正确解法..."></textarea>
+                    
+                    <!-- 图片上传区域 -->
+                    <div class="image-upload-area">
+                        <h3>上传错题图片</h3>
+                        <div class="image-preview-container" id="image-preview-container">
+                            <p id="no-image-text">暂无图片</p>
+                        </div>
+                        <div class="image-upload-controls">
+                            <input type="file" id="mistake-images" accept="image/*" multiple style="display: none;">
+                            <button type="button" id="select-images-btn">选择图片</button>
+                            <button type="button" id="clear-images-btn">清空图片</button>
+                        </div>
+                    </div>
+                    
+                    <button id="add-mistake">添加错题</button>
+                </div>
+                <div class="mistakes-display">
+                    <div class="mistakes-filters">
+                        <button class="mistake-filter active" data-filter="all">全部</button>
+                        <button class="mistake-filter" data-filter="math">数学一</button>
+                        <button class="mistake-filter" data-filter="english">英语一</button>
+                        <button class="mistake-filter" data-filter="politics">政治</button>
+                        <button class="mistake-filter" data-filter="data-structure">数据结构</button>
+                        <button class="mistake-filter" data-filter="coa">计算机组成原理</button>
+                        <button class="mistake-filter" data-filter="os">操作系统</button>
+                        <button class="mistake-filter" data-filter="cn">计算机网络</button>
+                        <button class="mistake-filter" data-filter="other">其他</button>
+                    </div>
+                    <ul id="mistakes-list" class="sortable-list"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入数据库模块 -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 初始化该页面特定功能
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDB();
+            loadMistakes();
+            setupImageUpload();
+        });
+    </script>
+</body>
+</html>
